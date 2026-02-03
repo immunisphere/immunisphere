@@ -1,76 +1,114 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Case Taking – ImmuniSphere</title>
+<title>AI Homeopathic Case Taking</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
 <style>
-body { font-family: Arial; background:#f4f7fb; margin:0; }
-.chatbox { max-width:800px; margin:30px auto; background:white; padding:20px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-.msg { margin:10px 0; padding:10px; border-radius:6px; }
-.ai { background:#e9f5ff; }
-.user { background:#d4f8e8; text-align:right; }
-input { width:100%; padding:10px; margin-top:10px; }
-button { margin-top:10px; padding:10px 15px; background:#2bb673; color:white; border:none; border-radius:4px; }
+body { font-family: Arial; background:#e5ddd5; margin:0; }
+.header {
+    background:#2bb673; color:white; padding:15px;
+    text-align:center; font-weight:bold;
+}
+.chatbox {
+    max-width:600px; margin:auto;
+    display:flex; flex-direction:column;
+    height:85vh; padding:10px;
+}
+.messages { flex:1; overflow-y:auto; display:flex; flex-direction:column; }
+.msg {
+    margin:8px 0; padding:10px 14px;
+    border-radius:18px; max-width:75%;
+}
+.ai { background:white; align-self:flex-start; }
+.user { background:#dcf8c6; align-self:flex-end; }
+.chat-input { display:flex; gap:5px; padding:10px; background:white; }
+input {
+    flex:1; padding:10px; border-radius:20px; border:1px solid #ccc;
+}
+button {
+    padding:10px 14px; border-radius:50%;
+    background:#2bb673; color:white; border:none; font-size:16px;
+}
 </style>
 </head>
 <body>
 
+<div class="header">🤖 AI Homeopathic Case Taking</div>
+
 <div class="chatbox">
-    <h2>AI Homeopathic Case Taking</h2>
-    <div id="chat"></div>
-    <input type="text" id="userInput" placeholder="Type your answer...">
-    <button onclick="sendAnswer()">Send</button>
+    <div class="messages" id="chat"></div>
+
+    <div class="chat-input">
+        <input type="text" id="userInput" placeholder="Type your answer...">
+        <button onclick="sendAnswer()">➤</button>
+    </div>
 </div>
 
 <script>
 const questions = [
-"Hello, I will help collect your case details. What is your main health problem?",
-"Since when has this problem started?",
-"Where exactly do you feel the problem?",
-"How would you describe the sensation (burning, throbbing, dull, stitching)?",
+"Hello 👋 I’ll ask a few questions to understand your health better. What is your main complaint?",
+"When did this problem start?",
+"Can you describe the sensation (burning, throbbing, stitching, dull, etc.)?",
 "What makes it worse?",
 "What makes it better?",
-"How is your thirst? Do you drink large or small quantities?",
+"Do you feel more affected by heat or cold?",
+"How is your thirst? More, less, or normal?",
 "Any particular food cravings or dislikes?",
-"How do you react emotionally to stress or grief?",
-"Do you prefer company or being alone when upset?",
-"Describe your sleep position and dreams if any."
+"How would you describe your emotional nature?",
+"Do you prefer company or being alone when unwell?",
+"How is your sleep?",
+"Do you have any fears, anxieties, or recurring thoughts?",
+"Thank you 🌿 Our AI has gathered your case. A doctor will review it shortly."
 ];
 
 let step = 0;
 let answers = [];
 
 function addMessage(text, sender) {
-    const div = document.createElement("div");
-    div.className = "msg " + sender;
-    div.innerText = text;
-    document.getElementById("chat").appendChild(div);
+    const msg = document.createElement("div");
+    msg.className = "msg " + sender;
+    msg.innerText = text;
+    document.getElementById("chat").appendChild(msg);
+    msg.scrollIntoView();
+}
+
+function askQuestion() {
+    if (step < questions.length) {
+        setTimeout(() => addMessage(questions[step], "ai"), 500);
+    } else {
+        // Save case data for doctor review
+        localStorage.setItem("aiCaseData", JSON.stringify(answers));
+        setTimeout(() => {
+            window.location.href = "ai-case-review.html";
+        }, 1500);
+    }
 }
 
 function sendAnswer() {
     const input = document.getElementById("userInput");
-    if (!input.value) return;
+    const text = input.value.trim();
+    if (!text) return;
 
-    addMessage(input.value, "user");
-    answers.push({ question: questions[step-1], answer: input.value });
+    addMessage(text, "user");
+
+    answers.push({
+        question: questions[step],
+        answer: text
+    });
+
     input.value = "";
-
-    if (step < questions.length) {
-        setTimeout(() => {
-            addMessage(questions[step], "ai");
-            step++;
-        }, 500);
-    } else {
-        finishCase();
-    }
+    step++;
+    askQuestion();
 }
 
-function finishCase() {
-    localStorage.setItem("aiCaseData", JSON.stringify(answers));
-    addMessage("Thank you. Your case has been recorded and sent to the doctor for review.", "ai");
-}
+// Start first question
+askQuestion();
 
-addMessage(questions[step], "ai");
-step++;
+// Enter key support
+document.getElementById("userInput").addEventListener("keypress", function(e){
+    if (e.key === "Enter") sendAnswer();
+});
 </script>
 
 </body>
