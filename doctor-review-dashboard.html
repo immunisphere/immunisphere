@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Doctor Review Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+    margin:0;
+    font-family: Arial, sans-serif;
+    background:#eef3f8;
+}
+.header{
+    background:#0f6cab;
+    color:white;
+    padding:18px;
+    font-size:20px;
+    font-weight:bold;
+}
+.container{
+    max-width:1200px;
+    margin:auto;
+    padding:20px;
+}
+.grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap:20px;
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+}
+h2{
+    margin-top:0;
+    color:#333;
+}
+.patient-info p{
+    margin:6px 0;
+}
+.remedy{
+    margin-bottom:15px;
+}
+.score{
+    float:right;
+    font-weight:bold;
+}
+.bar-bg{
+    background:#eee;
+    border-radius:5px;
+    margin-top:5px;
+}
+.bar-fill{
+    height:10px;
+    border-radius:5px;
+    background:#0f6cab;
+}
+textarea, select, input{
+    width:100%;
+    padding:10px;
+    margin-top:8px;
+    margin-bottom:15px;
+    border-radius:6px;
+    border:1px solid #ccc;
+    font-size:14px;
+}
+button{
+    padding:12px 18px;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+    margin-right:10px;
+}
+.approve{ background:#2bb673; color:white; }
+.modify{ background:#ff9800; color:white; }
+.reject{ background:#e53935; color:white; }
+
+.footer-actions{
+    text-align:center;
+    margin-top:20px;
+}
+@media(max-width:900px){
+    .grid{ grid-template-columns:1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">🧑‍⚕️ Doctor AI Case Review Dashboard</div>
+
+<div class="container">
+
+    <div class="grid">
+
+        <!-- PATIENT CASE SUMMARY -->
+        <div class="card patient-info">
+            <h2>📋 Patient Case Summary</h2>
+            <div id="patientDetails"></div>
+        </div>
+
+        <!-- AI REMEDY SUGGESTIONS -->
+        <div class="card">
+            <h2>🧠 AI Remedy Analysis</h2>
+            <div id="aiResults"></div>
+        </div>
+
+        <!-- DOCTOR PRESCRIPTION -->
+        <div class="card">
+            <h2>💊 Final Prescription</h2>
+
+            <label>Selected Remedy</label>
+            <input type="text" id="finalRemedy" placeholder="Enter remedy name">
+
+            <label>Potency</label>
+            <select id="potency">
+                <option>30C</option>
+                <option>200C</option>
+                <option>1M</option>
+                <option>Q (Mother Tincture)</option>
+            </select>
+
+            <label>Dosage Instructions</label>
+            <textarea id="dosage" rows="3" placeholder="E.g. 4 pills twice daily for 5 days"></textarea>
+
+            <label>Diet & Lifestyle Advice</label>
+            <textarea id="advice" rows="3" placeholder="Any restrictions or recommendations"></textarea>
+        </div>
+
+        <!-- DOCTOR NOTES -->
+        <div class="card">
+            <h2>📝 Doctor Notes</h2>
+            <textarea id="doctorNotes" rows="8" placeholder="Private clinical notes..."></textarea>
+        </div>
+
+    </div>
+
+    <div class="footer-actions">
+        <button class="approve" onclick="approveCase()">✅ Approve & Send Prescription</button>
+        <button class="modify" onclick="requestMoreInfo()">✏️ Ask Patient for More Info</button>
+        <button class="reject" onclick="rejectCase()">❌ Reject Case</button>
+    </div>
+
+</div>
+
+<script>
+// Load patient data
+const patientData = JSON.parse(localStorage.getItem("aiCaseData")) || {
+    name:"Patient Name",
+    age:30,
+    gender:"Female",
+    chiefComplaint:"Headache since 2 years",
+    mentalSymptoms:"Emotional sensitivity, grief history",
+    generals:"Thirstless, chilly patient"
+};
+
+document.getElementById("patientDetails").innerHTML = `
+    <p><strong>Name:</strong> ${patientData.name}</p>
+    <p><strong>Age:</strong> ${patientData.age}</p>
+    <p><strong>Gender:</strong> ${patientData.gender}</p>
+    <p><strong>Chief Complaint:</strong> ${patientData.chiefComplaint}</p>
+    <p><strong>Mental Symptoms:</strong> ${patientData.mentalSymptoms}</p>
+    <p><strong>Generals:</strong> ${patientData.generals}</p>
+`;
+
+// Load AI remedy results
+const aiResults = JSON.parse(localStorage.getItem("chronicRemedyResults")) || [
+    {name:"Pulsatilla", probability:72},
+    {name:"Nat Mur", probability:61},
+    {name:"Sepia", probability:45}
+];
+
+const resultsDiv = document.getElementById("aiResults");
+
+aiResults.forEach(r=>{
+    resultsDiv.innerHTML += `
+        <div class="remedy">
+            <strong>${r.name}</strong>
+            <span class="score">${r.probability}%</span>
+            <div class="bar-bg">
+                <div class="bar-fill" style="width:${r.probability}%"></div>
+            </div>
+        </div>
+    `;
+});
+
+// ACTION BUTTONS
+function approveCase(){
+    const prescription = {
+        remedy: document.getElementById("finalRemedy").value,
+        potency: document.getElementById("potency").value,
+        dosage: document.getElementById("dosage").value,
+        advice: document.getElementById("advice").value,
+        notes: document.getElementById("doctorNotes").value
+    };
+
+    localStorage.setItem("finalPrescription", JSON.stringify(prescription));
+    alert("Prescription sent to patient & pharmacy module.");
+}
+
+function requestMoreInfo(){
+    alert("Notification sent to patient for additional details.");
+}
+
+function rejectCase(){
+    alert("Case marked as unsuitable for online consultation.");
+}
+</script>
+
+</body>
+</html>
