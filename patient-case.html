@@ -12,7 +12,6 @@ body { margin:0; font-family: Arial, sans-serif; background:#f4f7fb; }
     background: linear-gradient(90deg,#0f6cab,#2bb673);
     color:white; padding:15px 25px;
     display:flex; justify-content:space-between; align-items:center;
-    font-weight:bold;
 }
 
 .container { padding:25px; max-width:1200px; margin:auto; }
@@ -31,15 +30,13 @@ label { font-weight:bold; display:block; margin-top:10px; }
 input, textarea, select {
     width:100%; padding:8px; margin-top:5px;
     border-radius:4px; border:1px solid #ccc;
-    font-size:14px;
 }
 
 textarea { min-height:80px; resize:vertical; }
 
 .btn {
     background:#2bb673; color:white; padding:10px 18px;
-    border:none; border-radius:4px; cursor:pointer; margin-top:12px;
-    font-weight:bold;
+    border:none; border-radius:4px; cursor:pointer; margin-top:10px;
 }
 
 .remedy-row {
@@ -57,13 +54,13 @@ textarea { min-height:80px; resize:vertical; }
     background:#e9f5ff; padding:15px; border-radius:6px; text-align:center;
 }
 
-.success-msg { color:green; font-size:13px; margin-top:8px; }
+.success-msg { color:green; font-size:14px; margin-top:8px; }
 </style>
 </head>
 <body>
 
 <div class="topbar">
-    <div onclick="history.back()" style="cursor:pointer;">← Back</div>
+    <div>← Back to Dashboard</div>
     <div>Patient Case File</div>
     <div>Dr. Sharma | <a href="login.html" style="color:white;">Logout</a></div>
 </div>
@@ -90,20 +87,10 @@ textarea { min-height:80px; resize:vertical; }
 <!-- CASE NOTES -->
 <div class="card">
     <h2>Case Notes</h2>
-    <label>Main Symptoms</label>
-    <textarea id="symptoms"></textarea>
-
-    <label>Modalities</label>
-    <textarea id="modalities"></textarea>
-
-    <label>Mental & Emotional State</label>
-    <textarea id="mental"></textarea>
-
-    <label>Physical Generals</label>
-    <textarea id="physical"></textarea>
-
-    <button class="btn" onclick="saveNotes()">Save Notes</button>
-    <div id="notesMsg" class="success-msg"></div>
+    <label>Main Symptoms</label><textarea></textarea>
+    <label>Modalities</label><textarea></textarea>
+    <label>Mental & Emotional State</label><textarea></textarea>
+    <label>Physical Generals</label><textarea></textarea>
 </div>
 
 <!-- PRESCRIPTION -->
@@ -111,71 +98,65 @@ textarea { min-height:80px; resize:vertical; }
     <h2>Prescription</h2>
 
     <div class="remedy-row">
-        <label>Remedy</label>
-        <input type="text" id="remedy1">
+        <label>Remedy</label><input type="text">
         <label>Potency</label>
-        <select id="potency1">
-            <option>30C</option><option>200C</option><option>1M</option><option>10M</option>
-        </select>
-        <label>Dose</label>
-        <input type="text" id="dose1">
+        <select><option>30C</option><option>200C</option><option>1M</option><option>10M</option></select>
+        <label>Dose</label><input type="text">
     </div>
 
     <div class="remedy-row">
-        <label>Second Remedy (Optional)</label>
-        <input type="text" id="remedy2">
+        <label>Second Remedy (Optional)</label><input type="text">
         <label>Potency</label>
-        <select id="potency2">
-            <option>30C</option><option>200C</option><option>1M</option><option>10M</option>
-        </select>
-        <label>Dose</label>
-        <input type="text" id="dose2">
+        <select><option>30C</option><option>200C</option><option>1M</option><option>10M</option></select>
+        <label>Dose</label><input type="text">
     </div>
 
-    <button class="btn" onclick="savePrescription()">Save Prescription</button>
-    <div id="prescriptionMsg" class="success-msg"></div>
+    <button class="btn">Save Prescription</button>
 </div>
 
-<!-- FOLLOW-UP -->
+<!-- FOLLOW-UP PROGRESS -->
 <div class="card">
     <h2>Follow-up Progress</h2>
     <label>Patient Response</label>
-    <input type="range" min="1" max="3" id="response">
-    <div class="slider-labels">
-        <span>Worse</span><span>Same</span><span>Better</span>
-    </div>
-
+    <input type="range" min="1" max="3">
+    <div class="slider-labels"><span>Worse</span><span>Same</span><span>Better</span></div>
     <label>Follow-up Notes</label>
-    <textarea id="followupNotes"></textarea>
-    <button class="btn" onclick="saveFollowup()">Save Follow-up</button>
-    <div id="followupMsg" class="success-msg"></div>
+    <textarea></textarea>
+    <button class="btn">Save Follow-up</button>
+</div>
+
+<!-- FOLLOW-UP REMINDER -->
+<div class="card">
+    <h2>Next Follow-up Reminder</h2>
+    <label>Next Follow-up Date</label>
+    <input type="date" id="nextFollowupDate">
+    <label>Reminder Note</label>
+    <input type="text" id="reminderNote">
+    <button class="btn" onclick="saveReminder()">Set Reminder</button>
+    <div id="reminderMsg" class="success-msg"></div>
 </div>
 
 <!-- MEDICINE DISPATCH -->
 <div class="card">
     <h2>Medicine Dispatch</h2>
-    <label>Courier Service</label>
-    <input type="text" id="courier">
-    <label>Tracking Number</label>
-    <input type="text" id="tracking">
-    <label>Dispatch Notes</label>
-    <textarea id="dispatchNotes"></textarea>
-    <button class="btn" onclick="markDispatched()">Mark as Dispatched</button>
-    <div id="dispatchMsg" class="success-msg"></div>
+    <label>Courier Service</label><input type="text">
+    <label>Tracking Number</label><input type="text">
+    <label>Dispatch Notes</label><textarea></textarea>
+    <button class="btn">Mark as Dispatched</button>
 </div>
 
 <!-- REPORT UPLOAD -->
 <div class="card">
     <h2>Upload Reports</h2>
     <input type="file">
-    <button class="btn" onclick="alert('Report uploaded (demo)')">Upload</button>
+    <button class="btn">Upload</button>
 </div>
 
 <!-- VIDEO CONSULT -->
 <div class="card video-box">
     <h2>Video Consultation</h2>
     <p>Start secure online consultation with patient</p>
-    <button class="btn" onclick="alert('Video call feature will connect to telemedicine service')">Start Video Call</button>
+    <button class="btn">Start Video Call</button>
 </div>
 
 <!-- HISTORY -->
@@ -188,10 +169,40 @@ textarea { min-height:80px; resize:vertical; }
 </div>
 
 <script>
-function saveNotes(){ document.getElementById("notesMsg").innerText="Notes saved (demo)"; }
-function savePrescription(){ document.getElementById("prescriptionMsg").innerText="Prescription saved (demo)"; }
-function saveFollowup(){ document.getElementById("followupMsg").innerText="Follow-up saved (demo)"; }
-function markDispatched(){ document.getElementById("dispatchMsg").innerText="Marked as dispatched (demo)"; }
+// SAVE REMINDER
+function saveReminder() {
+    const date = document.getElementById("nextFollowupDate").value;
+    const note = document.getElementById("reminderNote").value;
+
+    if (!date) return alert("Select follow-up date");
+
+    const reminder = {
+        patient: "Riya Patel",
+        caseId: "IM-2026-014",
+        date: date,
+        note: note
+    };
+
+    let reminders = JSON.parse(localStorage.getItem("followupReminders")) || [];
+    reminders.push(reminder);
+    localStorage.setItem("followupReminders", JSON.stringify(reminders));
+
+    document.getElementById("reminderMsg").innerText = "Follow-up reminder set successfully";
+}
+
+// CHECK REMINDERS ON PAGE LOAD
+function checkReminders() {
+    const today = new Date().toISOString().split("T")[0];
+    let reminders = JSON.parse(localStorage.getItem("followupReminders")) || [];
+
+    reminders.forEach(r => {
+        if (r.date <= today) {
+            alert(`Follow-up Due!\nPatient: ${r.patient}\nNote: ${r.note}`);
+        }
+    });
+}
+
+checkReminders();
 </script>
 
 </body>
