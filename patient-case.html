@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Patient Case – ImmuniSphere</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f7fb;
+}
+
+/* TOP BAR */
+.topbar {
+    background: linear-gradient(90deg,#0f6cab,#2bb673);
+    color: white;
+    padding: 15px 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.container {
+    padding: 25px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom: 20px;
+}
+
+h2 {
+    margin-top: 0;
+    color: #0f6cab;
+}
+
+/* GRID LAYOUT */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.full {
+    grid-column: 1 / -1;
+}
+
+/* FORM */
+label {
+    font-weight: bold;
+    display: block;
+    margin-top: 10px;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+
+.btn {
+    background:#2bb673;
+    color:white;
+    padding:10px 18px;
+    text-decoration:none;
+    border-radius:4px;
+    font-size: 14px;
+    border: none;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.history-entry {
+    border-left: 4px solid #0f6cab;
+    padding-left: 10px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>← Back to Dashboard</div>
+    <div>Patient Case File</div>
+</div>
+
+<div class="container">
+
+    <!-- PATIENT INFO -->
+    <div class="card grid">
+        <div>
+            <h2>Patient Details</h2>
+            <p><strong>Name:</strong> Riya Patel</p>
+            <p><strong>Age:</strong> 29</p>
+            <p><strong>Gender:</strong> Female</p>
+            <p><strong>Case ID:</strong> IM-2026-014</p>
+        </div>
+        <div>
+            <h2>Medical Overview</h2>
+            <p><strong>Primary Complaint:</strong> Chronic Migraine</p>
+            <p><strong>Case Status:</strong> Active</p>
+            <p><strong>Last Follow-up:</strong> 15 Jan 2026</p>
+        </div>
+    </div>
+
+    <!-- CASE TAKING -->
+    <div class="card">
+        <h2>Case Notes & Symptoms</h2>
+        <label>Main Symptoms</label>
+        <textarea placeholder="Describe current symptoms..."></textarea>
+
+        <label>Modalities (Better/Worse)</label>
+        <textarea placeholder="Aggravation / Amelioration factors"></textarea>
+
+        <label>Mental & Emotional State</label>
+        <textarea placeholder="Stress, fears, mood, temperament"></textarea>
+
+        <label>Physical Generals</label>
+        <textarea placeholder="Appetite, thirst, sleep, temperature preference"></textarea>
+    </div>
+
+    <!-- PRESCRIPTION SECTION -->
+    <div class="card">
+        <h2>Prescription</h2>
+
+        <div class="grid">
+            <div>
+                <label>Remedy</label>
+                <input type="text" placeholder="e.g. Natrum Mur">
+            </div>
+            <div>
+                <label>Potency</label>
+                <select>
+                    <option>30C</option>
+                    <option>200C</option>
+                    <option>1M</option>
+                    <option>10M</option>
+                </select>
+            </div>
+            <div>
+                <label>Dose Instructions</label>
+                <input type="text" placeholder="e.g. Once daily for 3 days">
+            </div>
+            <div>
+                <label>Follow-up After</label>
+                <input type="text" placeholder="e.g. 15 days">
+            </div>
+        </div>
+
+        <button class="btn">Save Prescription</button>
+    </div>
+
+    <!-- FOLLOW-UP HISTORY -->
+    <div class="card">
+        <h2>Case History Timeline</h2>
+
+        <div class="history-entry">
+            <strong>15 Jan 2026:</strong> Migraine intensity reduced. Sleep improved. Continued same remedy.
+        </div>
+        <div class="history-entry">
+            <strong>02 Jan 2026:</strong> Initial consultation. Headache 4–5 times/week, worse sunlight.
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
