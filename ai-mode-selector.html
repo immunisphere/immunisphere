@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>AI Consultation Mode Selection</title>
+<title>AI Consultation Mode Detection</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -17,64 +17,89 @@ body{
     margin:auto;
     padding:60px 20px;
 }
-h1{
-    margin-bottom:10px;
-}
-p{
-    opacity:0.9;
-    margin-bottom:40px;
-}
-.mode-btn{
-    display:block;
-    width:100%;
-    padding:18px;
-    margin-bottom:20px;
-    border:none;
-    border-radius:8px;
-    font-size:18px;
-    cursor:pointer;
-    transition:0.2s;
-}
-.acute{
-    background:#ff7043;
-    color:white;
-}
-.chronic{
-    background:#0f6cab;
-    color:white;
-}
-.mode-btn:hover{
-    transform:scale(1.03);
-}
-.note{
-    font-size:13px;
-    opacity:0.8;
+h1{ margin-bottom:10px; }
+p{ opacity:0.9; margin-bottom:30px; }
+
+.card{
+    background:white;
+    color:#333;
+    padding:20px;
+    border-radius:10px;
     margin-top:20px;
+}
+
+button{
+    padding:14px 20px;
+    margin:10px;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+.auto{ background:#2bb673; color:white; }
+.acute{ background:#ff7043; color:white; }
+.chronic{ background:#0f6cab; color:white; }
+
+.result{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:15px;
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>🩺 AI Integrated Consultation</h1>
-    <p>Select the type of case so the AI uses the correct homeopathic analysis model</p>
+    <h1>🩺 AI Consultation Mode</h1>
+    <p>AI can automatically decide the case type or you can choose manually</p>
 
-    <button class="mode-btn acute" onclick="goAcute()">
-        ⚡ Acute Case<br>
-        <small>Sudden, recent, intense symptoms</small>
-    </button>
+    <button class="auto" onclick="autoDetect()">🤖 Auto Detect Mode</button>
 
-    <button class="mode-btn chronic" onclick="goChronic()">
-        🧠 Chronic Case<br>
-        <small>Long-standing, mental & general symptoms important</small>
-    </button>
-
-    <div class="note">
-        You can change mode later if symptoms evolve.
+    <div class="card">
+        <h3>Or Select Manually</h3>
+        <button class="acute" onclick="goAcute()">⚡ Acute</button>
+        <button class="chronic" onclick="goChronic()">🧠 Chronic</button>
+        <div id="decision" class="result"></div>
     </div>
 </div>
 
 <script>
+// Example data pulled from AI case-taking page
+const caseData = JSON.parse(localStorage.getItem("aiCaseData")) || {
+    durationDays: 2,
+    onset: "sudden",
+    intensity: "high",
+    mentalSymptoms: false,
+    causeKnown: true
+};
+
+function autoDetect(){
+    let scoreAcute = 0;
+    let scoreChronic = 0;
+
+    if(caseData.durationDays <= 7) scoreAcute += 2;
+    if(caseData.durationDays > 21) scoreChronic += 2;
+
+    if(caseData.onset === "sudden") scoreAcute += 2;
+    if(caseData.onset === "gradual") scoreChronic += 2;
+
+    if(caseData.intensity === "high") scoreAcute += 1;
+
+    if(caseData.mentalSymptoms) scoreChronic += 2;
+
+    if(caseData.causeKnown) scoreAcute += 1;
+
+    if(scoreAcute >= scoreChronic){
+        document.getElementById("decision").innerHTML = "⚡ AI Selected: ACUTE MODE";
+        localStorage.setItem("caseMode", "acute");
+        setTimeout(()=>window.location.href="ai-acute-analysis.html",1500);
+    } else {
+        document.getElementById("decision").innerHTML = "🧠 AI Selected: CHRONIC MODE";
+        localStorage.setItem("caseMode", "chronic");
+        setTimeout(()=>window.location.href="ai-chronic-analysis.html",1500);
+    }
+}
+
 function goAcute(){
     localStorage.setItem("caseMode", "acute");
     window.location.href = "ai-acute-analysis.html";
