@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Acute Remedy Analysis</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin:0;
+    background:#f4f6f9;
+}
+.header {
+    background:#ff7043;
+    color:white;
+    padding:18px;
+    text-align:center;
+    font-size:20px;
+    font-weight:bold;
+}
+.container {
+    max-width:900px;
+    margin:auto;
+    padding:20px;
+}
+.card {
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+}
+h2 { margin-top:0; color:#333; }
+.remedy {
+    margin-bottom:15px;
+}
+.score {
+    float:right;
+    font-weight:bold;
+}
+.bar-bg {
+    background:#eee;
+    border-radius:5px;
+    margin-top:5px;
+}
+.bar-fill {
+    height:10px;
+    border-radius:5px;
+    background:#ff7043;
+}
+.note {
+    font-size:13px;
+    color:#666;
+    margin-top:10px;
+}
+button {
+    padding:12px 18px;
+    background:#2bb673;
+    color:white;
+    border:none;
+    border-radius:6px;
+    cursor:pointer;
+    font-size:15px;
+}
+button:hover { opacity:0.9; }
+</style>
+</head>
+<body>
+
+<div class="header">⚡ AI Acute Homeopathic Remedy Analysis</div>
+
+<div class="container">
+
+    <div class="card">
+        <h2>📋 Extracted Acute Rubrics</h2>
+        <div id="rubricList"></div>
+    </div>
+
+    <div class="card">
+        <h2>💊 Remedy Probability (Acute Mode)</h2>
+        <div id="results"></div>
+        <div class="note">Higher % = closer match to acute symptom picture</div>
+    </div>
+
+    <div class="card" style="text-align:center;">
+        <button onclick="sendToDoctor()">Send Case to Doctor Review</button>
+    </div>
+
+</div>
+
+<script>
+// ACUTE MODE RUBRICS
+const rubrics = [
+    { name:"Head pain – throbbing", type:"sensation" },
+    { name:"Worse motion", type:"modality" },
+    { name:"Better rest", type:"modality" },
+    { name:"Sudden onset", type:"onset", keynote:true },
+    { name:"Thirstless", type:"general" },
+    { name:"Irritable during pain", type:"mental" }
+];
+
+// Show rubrics
+document.getElementById("rubricList").innerHTML =
+    rubrics.map(r => "• " + r.name + " (" + r.type + ")" + (r.keynote ? " ⭐" : "")).join("<br>");
+
+// Remedy database
+const repertoryDB = {
+    "Aconite": ["Sudden onset","Fear","Restlessness","After cold wind"],
+    "Belladonna": ["Throbbing pain","Heat","Sudden onset","Red face"],
+    "Bryonia": ["Worse motion","Better rest","Dryness","Irritable","Gradual onset"],
+    "Pulsatilla": ["Thirstless","Weepy","Better company","Changeable"]
+};
+
+// Acute weighting
+const acuteWeights = {
+    modality: 3,
+    sensation: 3,
+    onset: 2,
+    general: 2,
+    mental: 1
+};
+
+let scores = {};
+let maxPossibleScore = 0;
+
+rubrics.forEach(rubric => {
+    let rubricWeight = acuteWeights[rubric.type] || 1;
+    if (rubric.keynote) rubricWeight += 2;
+    maxPossibleScore += rubricWeight;
+
+    for (let remedy in repertoryDB) {
+        if (repertoryDB[remedy].some(symptom =>
+            rubric.name.toLowerCase().includes(symptom.toLowerCase())
+        )) {
+            scores[remedy] = (scores[remedy] || 0) + rubricWeight;
+        }
+    }
+});
+
+// Convert to probabilities
+let remedyResults = Object.entries(scores).map(([remedy, score]) => ({
+    name: remedy,
+    score: score,
+    probability: ((score / maxPossibleScore) * 100).toFixed(1)
+}));
+
+remedyResults.sort((a,b)=>b.score-a.score);
+
+// Display
+const resultsDiv = document.getElementById("results");
+
+remedyResults.forEach(r => {
+    resultsDiv.innerHTML += `
+        <div class="remedy">
+            <strong>${r.name}</strong>
+            <span class="score">${r.probability}%</span>
+            <div class="bar-bg">
+                <div class="bar-fill" style="width:${r.probability}%"></div>
+            </div>
+        </div>
+    `;
+});
+
+// Send to doctor
+function sendToDoctor(){
+    localStorage.setItem("acuteRemedyResults", JSON.stringify(remedyResults));
+    alert("Case analysis sent to doctor dashboard.");
+}
+</script>
+
+</body>
+</html>
