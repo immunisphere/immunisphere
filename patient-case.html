@@ -56,11 +56,8 @@ textarea { min-height:80px; resize:vertical; }
 .video-box {
     background:#e9f5ff; padding:15px; border-radius:6px; text-align:center;
 }
-.success-msg {
-    color:green;
-    font-size:13px;
-    margin-top:8px;
-}
+
+.success-msg { color:green; font-size:13px; margin-top:8px; }
 </style>
 </head>
 <body>
@@ -68,7 +65,7 @@ textarea { min-height:80px; resize:vertical; }
 <div class="topbar">
     <div onclick="history.back()" style="cursor:pointer;">← Back</div>
     <div>Patient Case File</div>
-    <div><a href="login.html" style="color:white;">Logout</a></div>
+    <div>Dr. Sharma | <a href="login.html" style="color:white;">Logout</a></div>
 </div>
 
 <div class="container">
@@ -116,12 +113,10 @@ textarea { min-height:80px; resize:vertical; }
     <div class="remedy-row">
         <label>Remedy</label>
         <input type="text" id="remedy1">
-
         <label>Potency</label>
         <select id="potency1">
             <option>30C</option><option>200C</option><option>1M</option><option>10M</option>
         </select>
-
         <label>Dose</label>
         <input type="text" id="dose1">
     </div>
@@ -129,12 +124,10 @@ textarea { min-height:80px; resize:vertical; }
     <div class="remedy-row">
         <label>Second Remedy (Optional)</label>
         <input type="text" id="remedy2">
-
         <label>Potency</label>
         <select id="potency2">
             <option>30C</option><option>200C</option><option>1M</option><option>10M</option>
         </select>
-
         <label>Dose</label>
         <input type="text" id="dose2">
     </div>
@@ -163,13 +156,10 @@ textarea { min-height:80px; resize:vertical; }
     <h2>Medicine Dispatch</h2>
     <label>Courier Service</label>
     <input type="text" id="courier">
-
     <label>Tracking Number</label>
     <input type="text" id="tracking">
-
     <label>Dispatch Notes</label>
     <textarea id="dispatchNotes"></textarea>
-
     <button class="btn" onclick="markDispatched()">Mark as Dispatched</button>
     <div id="dispatchMsg" class="success-msg"></div>
 </div>
@@ -198,18 +188,10 @@ textarea { min-height:80px; resize:vertical; }
 </div>
 
 <script>
-function saveNotes(){
-    document.getElementById("notesMsg").innerText="Notes saved (demo)";
-}
-function savePrescription(){
-    document.getElementById("prescriptionMsg").innerText="Prescription saved (demo)";
-}
-function saveFollowup(){
-    document.getElementById("followupMsg").innerText="Follow-up saved (demo)";
-}
-function markDispatched(){
-    document.getElementById("dispatchMsg").innerText="Marked as dispatched (demo)";
-}
+function saveNotes(){ document.getElementById("notesMsg").innerText="Notes saved (demo)"; }
+function savePrescription(){ document.getElementById("prescriptionMsg").innerText="Prescription saved (demo)"; }
+function saveFollowup(){ document.getElementById("followupMsg").innerText="Follow-up saved (demo)"; }
+function markDispatched(){ document.getElementById("dispatchMsg").innerText="Marked as dispatched (demo)"; }
 </script>
 
 </body>
