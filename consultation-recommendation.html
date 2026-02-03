@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Consultation Recommendation</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+body{
+    font-family: Arial, sans-serif;
+    margin:0;
+    background: linear-gradient(135deg, #0f6cab, #2bb673);
+    color:white;
+    text-align:center;
+}
+.container{
+    max-width:600px;
+    margin:auto;
+    padding:60px 20px;
+}
+h1{ margin-bottom:10px; }
+p{ opacity:0.9; margin-bottom:30px; }
+
+.card{
+    background:white;
+    color:#333;
+    padding:20px;
+    border-radius:10px;
+    margin-top:20px;
+}
+
+button{
+    padding:14px 20px;
+    margin:10px;
+    border:none;
+    border-radius:6px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+.auto{ background:#2bb673; color:white; }
+.ai{ background:#ff7043; color:white; }
+.phone{ background:#2bb673; color:white; }
+.video{ background:#0f6cab; color:white; }
+
+.result{
+    font-size:18px;
+    font-weight:bold;
+    margin-top:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>🩺 Consultation Recommendation</h1>
+    <p>Let AI suggest the best consultation type for you</p>
+
+    <button class="auto" onclick="autoRecommend()">🤖 Auto Recommend</button>
+
+    <div class="card">
+        <h3>Or Choose Manually</h3>
+        <button class="ai" onclick="goAI()">AI Consultation – ₹999</button>
+        <button class="phone" onclick="goPhone()">Phone – ₹1499</button>
+        <button class="video" onclick="goVideo()">Video – ₹1899</button>
+        <div id="decision" class="result"></div>
+    </div>
+</div>
+
+<script>
+// Example patient data from AI case page
+const caseData = JSON.parse(localStorage.getItem("aiCaseData")) || {
+    severity: "moderate",
+    chronic: true,
+    prefersTalking: true
+};
+
+function autoRecommend(){
+    let recommendation = "ai";
+
+    if(caseData.severity === "high" || caseData.prefersTalking){
+        recommendation = "video";
+    } else if(caseData.chronic){
+        recommendation = "phone";
+    }
+
+    if(recommendation === "video"){
+        document.getElementById("decision").innerHTML = "🎥 Recommended: VIDEO CONSULTATION (₹1899)";
+        localStorage.setItem("consultationType", "video");
+        setTimeout(()=>window.location.href="video-booking.html",1500);
+    }
+    else if(recommendation === "phone"){
+        document.getElementById("decision").innerHTML = "📞 Recommended: PHONE CONSULTATION (₹1499)";
+        localStorage.setItem("consultationType", "phone");
+        setTimeout(()=>window.location.href="phone-booking.html",1500);
+    }
+    else{
+        document.getElementById("decision").innerHTML = "🤖 Recommended: AI CONSULTATION (₹999)";
+        localStorage.setItem("consultationType", "ai");
+        setTimeout(()=>window.location.href="ai-case-taking.html",1500);
+    }
+}
+
+function goAI(){
+    localStorage.setItem("consultationType", "ai");
+    window.location.href = "ai-case-taking.html";
+}
+
+function goPhone(){
+    localStorage.setItem("consultationType", "phone");
+    window.location.href = "phone-booking.html";
+}
+
+function goVideo(){
+    localStorage.setItem("consultationType", "video");
+    window.location.href = "video-booking.html";
+}
+</script>
+
+</body>
+</html>
