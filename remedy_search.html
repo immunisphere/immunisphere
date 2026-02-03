@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Remedy Search</title>
+<style>
+body { font-family:Arial; background:#f4f7fb; padding:30px; }
+.card { background:white; padding:20px; border-radius:8px; max-width:800px; margin:auto; }
+input { width:100%; padding:10px; margin-top:10px; }
+.result { margin-top:10px; padding:10px; background:#eef9f1; border-radius:6px; }
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>Remedy Search Engine</h2>
+<input type="text" id="search" placeholder="Search symptom, modality, mental state...">
+<div id="results"></div>
+</div>
+
+<script>
+const remedies = {
+"Bryonia": "Worse motion, better rest, dryness, irritable",
+"Pulsatilla": "Thirstless, weepy, better company, changeable symptoms",
+"Nat Mur": "Reserved, grief, headaches like hammer, craving salt"
+};
+
+document.getElementById("search").addEventListener("input", function(){
+    let q = this.value.toLowerCase();
+    let out = "";
+    for (let r in remedies) {
+        if (remedies[r].toLowerCase().includes(q)) {
+            out += `<div class="result"><strong>${r}</strong><br>${remedies[r]}</div>`;
+        }
+    }
+    document.getElementById("results").innerHTML = out;
+});
+</script>
+
+</body>
+</html>
