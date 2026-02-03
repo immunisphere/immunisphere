@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Case Review – Doctor Panel</title>
+<style>
+body { margin:0; font-family:Arial, sans-serif; background:#f4f7fb; }
+
+.topbar {
+    background: linear-gradient(90deg,#0f6cab,#2bb673);
+    color:white;
+    padding:15px 25px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    font-weight:bold;
+}
+
+.container { max-width:1200px; margin:25px auto; padding:0 20px; }
+
+.card {
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    margin-bottom:20px;
+}
+
+h2 { margin-top:0; color:#0f6cab; }
+
+.case-answer {
+    border-left:4px solid #2bb673;
+    padding-left:10px;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+textarea, input, select {
+    width:100%;
+    padding:8px;
+    margin-top:6px;
+    border-radius:4px;
+    border:1px solid #ccc;
+}
+
+.btn {
+    background:#2bb673;
+    color:white;
+    padding:10px 16px;
+    border:none;
+    border-radius:4px;
+    margin-top:12px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.warning {
+    background:#fff4e5;
+    padding:12px;
+    border-left:4px solid orange;
+    font-size:14px;
+    margin-bottom:15px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>🧠 AI Case Review</div>
+    <div>Dr. Sharma | <a href="login.html" style="color:white;">Logout</a></div>
+</div>
+
+<div class="container">
+
+<div class="warning">
+⚠ AI-generated case summary is for assistance only. Final prescription must be decided by the doctor.
+</div>
+
+<!-- PATIENT INFO -->
+<div class="card">
+    <h2>Patient Information</h2>
+    <p><strong>Name:</strong> Riya Patel</p>
+    <p><strong>Age:</strong> 29</p>
+    <p><strong>Case Type:</strong> AI-Integrated Consultation</p>
+</div>
+
+<!-- RAW AI ANSWERS -->
+<div class="card">
+    <h2>Patient Answers (AI Collected)</h2>
+    <div id="aiAnswers"></div>
+</div>
+
+<!-- AI STRUCTURED SUMMARY -->
+<div class="card">
+    <h2>AI Case Summary</h2>
+
+    <label>Chief Complaints</label>
+    <textarea id="chief"></textarea>
+
+    <label>Mental & Emotional State</label>
+    <textarea id="mental"></textarea>
+
+    <label>Physical Generals</label>
+    <textarea id="physical"></textarea>
+
+    <label>Modalities</label>
+    <textarea id="modalities"></textarea>
+
+    <label>History</label>
+    <textarea id="history"></textarea>
+</div>
+
+<!-- DOCTOR NOTES -->
+<div class="card">
+    <h2>Doctor Clinical Notes</h2>
+    <textarea placeholder="Add your clinical observations here..."></textarea>
+</div>
+
+<!-- PRESCRIPTION -->
+<div class="card">
+    <h2>Finalize Prescription</h2>
+
+    <label>Remedy</label>
+    <input type="text">
+
+    <label>Potency</label>
+    <select>
+        <option>30C</option>
+        <option>200C</option>
+        <option>1M</option>
+        <option>10M</option>
+    </select>
+
+    <label>Dose Instructions</label>
+    <textarea placeholder="e.g. 4 pills once daily for 5 days"></textarea>
+
+    <button class="btn" onclick="finalizeCase()">Approve & Move to Patient Case File</button>
+</div>
+
+</div>
+
+<script>
+// LOAD AI ANSWERS
+const answers = JSON.parse(localStorage.getItem("aiCaseData")) || [];
+const container = document.getElementById("aiAnswers");
+
+answers.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "case-answer";
+    div.innerHTML = `<strong>Q:</strong> ${item.question}<br><strong>A:</strong> ${item.answer}`;
+    container.appendChild(div);
+});
+
+// SIMPLE AI AUTO-SUMMARY (DEMO LOGIC)
+document.getElementById("chief").value = answers[0]?.answer || "";
+document.getElementById("modalities").value = answers[4]?.answer + " | Better: " + (answers[5]?.answer || "");
+document.getElementById("physical").value = answers[6]?.answer + " | Food: " + (answers[7]?.answer || "");
+document.getElementById("mental").value = answers[8]?.answer + " | Company preference: " + (answers[9]?.answer || "");
+document.getElementById("history").value = "Sleep: " + (answers[10]?.answer || "");
+
+// FINALIZE CASE
+function finalizeCase() {
+    alert("Case approved and moved to main patient file (demo)");
+}
+</script>
+
+</body>
+</html>
