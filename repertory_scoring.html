@@ -1,61 +1,68 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Repertory Scoring</title>
-<style>
-body { font-family:Arial; background:#f4f7fb; margin:0; }
-.container { max-width:1000px; margin:30px auto; }
-.card { background:white; padding:20px; border-radius:8px; margin-bottom:20px; box-shadow:0 4px 10px rgba(0,0,0,0.08); }
-h2 { color:#0f6cab; margin-top:0; }
-.remedy { padding:10px; border-bottom:1px solid #eee; }
-.score { float:right; font-weight:bold; color:#2bb673; }
-</style>
-</head>
-<body>
-
-<div class="container">
-<div class="card">
-<h2>AI Repertory Scoring</h2>
-<div id="rubricList"></div>
-</div>
-
-<div class="card">
-<h2>Remedy Ranking</h2>
-<div id="results"></div>
-</div>
-</div>
-
 <script>
+// Rubrics extracted from AI case (can later be dynamic)
 const rubrics = JSON.parse(localStorage.getItem("aiRubrics")) || [
-"Head pain – throbbing","Worse motion","Better rest","Thirstless"
+"Head pain – throbbing",
+"Worse motion",
+"Better rest",
+"Thirstless",
+"Emotional sensitivity"
 ];
 
-document.getElementById("rubricList").innerHTML = rubrics.map(r => "• "+r).join("<br>");
+document.getElementById("rubricList").innerHTML =
+    rubrics.map(r => "• " + r).join("<br>");
 
-// Demo repertory database
+// Expanded demo repertory database
 const repertoryDB = {
-"Bryonia": ["Worse motion","Better rest","Dryness"],
-"Pulsatilla": ["Thirstless","Emotional","Better company"],
-"Belladonna": ["Throbbing pain","Heat","Sudden onset"]
+"Bryonia": ["Worse motion","Better rest","Dryness","Irritable","Head pain"],
+"Pulsatilla": ["Thirstless","Emotional","Better company","Weepy","Changeable symptoms"],
+"Belladonna": ["Throbbing pain","Heat","Sudden onset","Red face"],
+"Nat Mur": ["Reserved","Grief","Headache like hammer","Craves salt","Emotional"]
 };
 
+// Score calculation
 let scores = {};
+let totalRubricMatches = 0;
 
 rubrics.forEach(rubric => {
     for (let remedy in repertoryDB) {
-        if (repertoryDB[remedy].some(r => rubric.toLowerCase().includes(r.toLowerCase()))) {
-            scores[remedy] = (scores[remedy] || 0) + 2;
+        if (repertoryDB[remedy].some(symptom =>
+            rubric.toLowerCase().includes(symptom.toLowerCase())
+        )) {
+            scores[remedy] = (scores[remedy] || 0) + 1;
+            totalRubricMatches++;
         }
     }
 });
 
-const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+// Convert scores to probability %
+let remedyResults = Object.entries(scores).map(([remedy, score]) => {
+    return {
+        name: remedy,
+        score: score,
+        probability: ((score / totalRubricMatches) * 100).toFixed(1)
+    };
+});
 
+// Sort highest probability first
+remedyResults.sort((a, b) => b.probability - a.probability);
+
+// Display results with visual bar
 const resultsDiv = document.getElementById("results");
-sorted.forEach(([remedy,score])=>{
-    resultsDiv.innerHTML += `<div class="remedy">${remedy} <span class="score">${score}</span></div>`;
+
+remedyResults.forEach(r => {
+    resultsDiv.innerHTML += `
+        <div class="remedy">
+            <strong>${r.name}</strong>
+            <span class="score">${r.probability}%</span>
+            <div style="background:#eee; border-radius:4px; margin-top:5px;">
+                <div style="
+                    width:${r.probability}%;
+                    background:#2bb673;
+                    height:8px;
+                    border-radius:4px;">
+                </div>
+            </div>
+        </div>
+    `;
 });
 </script>
-
-</body>
-</html>
