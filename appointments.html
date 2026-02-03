@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Appointments – ImmuniSphere</title>
+
+<style>
+body { margin:0; font-family:Arial, sans-serif; background:#f4f7fb; }
+
+.topbar {
+    background: linear-gradient(90deg,#0f6cab,#2bb673);
+    color:white; padding:15px 25px;
+    display:flex; justify-content:space-between; align-items:center;
+    font-weight:bold;
+}
+
+.container { max-width:1100px; margin:25px auto; padding:0 20px; }
+
+.calendar {
+    background:white;
+    border-radius:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+    padding:20px;
+}
+
+.calendar-header {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:15px;
+}
+
+.calendar-header button {
+    background:#2bb673;
+    color:white;
+    border:none;
+    padding:6px 12px;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+.days, .dates {
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    text-align:center;
+}
+
+.days div {
+    font-weight:bold;
+    padding:10px 0;
+    color:#0f6cab;
+}
+
+.dates div {
+    padding:12px 0;
+    border-radius:6px;
+    margin:4px;
+    cursor:pointer;
+    position:relative;
+}
+
+.dates div:hover { background:#e6f7f0; }
+
+.today { background:#2bb673; color:white; }
+
+.appointment-dot {
+    width:6px;
+    height:6px;
+    background:red;
+    border-radius:50%;
+    position:absolute;
+    bottom:6px;
+    left:50%;
+    transform:translateX(-50%);
+}
+
+/* APPOINTMENT PANEL */
+.panel {
+    margin-top:20px;
+    background:white;
+    padding:20px;
+    border-radius:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08);
+}
+
+label { font-weight:bold; display:block; margin-top:10px; }
+
+input, select {
+    width:100%;
+    padding:8px;
+    margin-top:5px;
+    border-radius:4px;
+    border:1px solid #ccc;
+}
+
+.btn {
+    background:#2bb673;
+    color:white;
+    padding:10px 16px;
+    border:none;
+    border-radius:4px;
+    margin-top:12px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.appointment-item {
+    padding:8px;
+    background:#f1f9f5;
+    border-left:4px solid #2bb673;
+    margin-top:8px;
+    font-size:14px;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+    <div>📅 Appointment Calendar</div>
+    <div>Dr. Sharma | <a href="login.html" style="color:white;">Logout</a></div>
+</div>
+
+<div class="container">
+
+<div class="calendar">
+    <div class="calendar-header">
+        <button onclick="changeMonth(-1)">◀</button>
+        <h2 id="monthYear"></h2>
+        <button onclick="changeMonth(1)">▶</button>
+    </div>
+
+    <div class="days">
+        <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+        <div>Thu</div><div>Fri</div><div>Sat</div>
+    </div>
+
+    <div class="dates" id="calendarDates"></div>
+</div>
+
+<!-- APPOINTMENT PANEL -->
+<div class="panel">
+    <h2 id="selectedDateTitle">Select a date</h2>
+
+    <label>Patient Name</label>
+    <input type="text" id="patientName">
+
+    <label>Time Slot</label>
+    <select id="timeSlot">
+        <option>09:00 AM</option>
+        <option>10:00 AM</option>
+        <option>11:00 AM</option>
+        <option>12:00 PM</option>
+        <option>02:00 PM</option>
+        <option>03:00 PM</option>
+        <option>04:00 PM</option>
+        <option>05:00 PM</option>
+    </select>
+
+    <button class="btn" onclick="addAppointment()">Add Appointment</button>
+
+    <h3 style="margin-top:20px;">Appointments</h3>
+    <div id="appointmentList"></div>
+</div>
+
+</div>
+
+<script>
+let currentDate = new Date();
+let selectedDate = null;
+let appointments = {};
+
+function renderCalendar() {
+    const monthYear = document.getElementById("monthYear");
+    const calendarDates = document.getElementById("calendarDates");
+
+    calendarDates.innerHTML = "";
+
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+
+    monthYear.innerText = currentDate.toLocaleString("default", { month: "long", year: "numeric" });
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const lastDate = new Date(year, month + 1, 0).getDate();
+
+    for (let i = 0; i < firstDay; i++) {
+        calendarDates.innerHTML += "<div></div>";
+    }
+
+    for (let day = 1; day <= lastDate; day++) {
+        const dateKey = `${year}-${month+1}-${day}`;
+        const div = document.createElement("div");
+        div.innerText = day;
+        div.onclick = () => selectDate(dateKey);
+
+        if (appointments[dateKey]) {
+            const dot = document.createElement("div");
+            dot.className = "appointment-dot";
+            div.appendChild(dot);
+        }
+
+        calendarDates.appendChild(div);
+    }
+}
+
+function changeMonth(offset) {
+    currentDate.setMonth(currentDate.getMonth() + offset);
+    renderCalendar();
+}
+
+function selectDate(dateKey) {
+    selectedDate = dateKey;
+    document.getElementById("selectedDateTitle").innerText = "Appointments on " + dateKey;
+    showAppointments();
+}
+
+function addAppointment() {
+    if (!selectedDate) return alert("Select a date first");
+
+    const name = document.getElementById("patientName").value;
+    const time = document.getElementById("timeSlot").value;
+
+    if (!appointments[selectedDate]) appointments[selectedDate] = [];
+    appointments[selectedDate].push(`${time} - ${name}`);
+
+    document.getElementById("patientName").value = "";
+    showAppointments();
+    renderCalendar();
+}
+
+function showAppointments() {
+    const list = document.getElementById("appointmentList");
+    list.innerHTML = "";
+
+    if (!appointments[selectedDate]) return;
+
+    appointments[selectedDate].forEach(app => {
+        const div = document.createElement("div");
+        div.className = "appointment-item";
+        div.innerText = app;
+        list.appendChild(div);
+    });
+}
+
+renderCalendar();
+</script>
+
+</body>
+</html>
