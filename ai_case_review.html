@@ -4,61 +4,41 @@
 <title>AI Case Review – Doctor Panel</title>
 <style>
 body { margin:0; font-family:Arial, sans-serif; background:#f4f7fb; }
-
 .topbar {
     background: linear-gradient(90deg,#0f6cab,#2bb673);
-    color:white;
-    padding:15px 25px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+    color:white; padding:15px 25px;
+    display:flex; justify-content:space-between; align-items:center;
     font-weight:bold;
 }
-
 .container { max-width:1200px; margin:25px auto; padding:0 20px; }
-
 .card {
-    background:white;
-    padding:20px;
-    border-radius:8px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.08);
-    margin-bottom:20px;
+    background:white; padding:20px; border-radius:8px;
+    box-shadow:0 4px 10px rgba(0,0,0,0.08); margin-bottom:20px;
 }
-
 h2 { margin-top:0; color:#0f6cab; }
-
 .case-answer {
-    border-left:4px solid #2bb673;
-    padding-left:10px;
-    margin-bottom:10px;
-    font-size:14px;
+    border-left:4px solid #2bb673; padding-left:10px;
+    margin-bottom:10px; font-size:14px;
 }
-
 textarea, input, select {
-    width:100%;
-    padding:8px;
-    margin-top:6px;
-    border-radius:4px;
-    border:1px solid #ccc;
+    width:100%; padding:8px; margin-top:6px;
+    border-radius:4px; border:1px solid #ccc;
 }
-
 .btn {
-    background:#2bb673;
-    color:white;
-    padding:10px 16px;
-    border:none;
-    border-radius:4px;
-    margin-top:12px;
-    cursor:pointer;
-    font-weight:bold;
+    background:#2bb673; color:white; padding:10px 16px;
+    border:none; border-radius:4px; margin-top:12px;
+    cursor:pointer; font-weight:bold;
 }
-
 .warning {
-    background:#fff4e5;
-    padding:12px;
-    border-left:4px solid orange;
-    font-size:14px;
-    margin-bottom:15px;
+    background:#fff4e5; padding:12px;
+    border-left:4px solid orange; font-size:14px; margin-bottom:15px;
+}
+.rubric {
+    background:#eef9f1; padding:6px 10px; border-radius:4px;
+    display:inline-block; margin:4px; font-size:13px;
+}
+.remedy-box {
+    background:#f1f7ff; padding:10px; border-radius:6px; margin-top:8px;
 }
 </style>
 </head>
@@ -72,10 +52,9 @@ textarea, input, select {
 <div class="container">
 
 <div class="warning">
-⚠ AI-generated case summary is for assistance only. Final prescription must be decided by the doctor.
+⚠ AI-generated suggestions assist analysis. Final decision must be made by the doctor.
 </div>
 
-<!-- PATIENT INFO -->
 <div class="card">
     <h2>Patient Information</h2>
     <p><strong>Name:</strong> Riya Patel</p>
@@ -83,63 +62,50 @@ textarea, input, select {
     <p><strong>Case Type:</strong> AI-Integrated Consultation</p>
 </div>
 
-<!-- RAW AI ANSWERS -->
 <div class="card">
-    <h2>Patient Answers (AI Collected)</h2>
+    <h2>Patient Answers</h2>
     <div id="aiAnswers"></div>
 </div>
 
-<!-- AI STRUCTURED SUMMARY -->
 <div class="card">
     <h2>AI Case Summary</h2>
-
-    <label>Chief Complaints</label>
-    <textarea id="chief"></textarea>
-
-    <label>Mental & Emotional State</label>
-    <textarea id="mental"></textarea>
-
-    <label>Physical Generals</label>
-    <textarea id="physical"></textarea>
-
-    <label>Modalities</label>
-    <textarea id="modalities"></textarea>
-
-    <label>History</label>
-    <textarea id="history"></textarea>
+    <label>Chief Complaints</label><textarea id="chief"></textarea>
+    <label>Mental State</label><textarea id="mental"></textarea>
+    <label>Physical Generals</label><textarea id="physical"></textarea>
+    <label>Modalities</label><textarea id="modalities"></textarea>
 </div>
 
-<!-- DOCTOR NOTES -->
+<!-- RUBRICS -->
 <div class="card">
-    <h2>Doctor Clinical Notes</h2>
-    <textarea placeholder="Add your clinical observations here..."></textarea>
+    <h2>Extracted Rubrics</h2>
+    <div id="rubrics"></div>
 </div>
 
-<!-- PRESCRIPTION -->
+<!-- REMEDY DIFFERENTIATION -->
+<div class="card">
+    <h2>Suggested Remedy Differentiation</h2>
+    <div id="remedySuggestions"></div>
+</div>
+
+<div class="card">
+    <h2>Doctor Notes</h2>
+    <textarea placeholder="Clinical observations..."></textarea>
+</div>
+
 <div class="card">
     <h2>Finalize Prescription</h2>
-
-    <label>Remedy</label>
-    <input type="text">
-
+    <label>Remedy</label><input type="text" id="finalRemedy">
     <label>Potency</label>
-    <select>
-        <option>30C</option>
-        <option>200C</option>
-        <option>1M</option>
-        <option>10M</option>
+    <select id="potency">
+        <option>30C</option><option>200C</option><option>1M</option>
     </select>
-
-    <label>Dose Instructions</label>
-    <textarea placeholder="e.g. 4 pills once daily for 5 days"></textarea>
-
-    <button class="btn" onclick="finalizeCase()">Approve & Move to Patient Case File</button>
+    <label>Dose</label><textarea id="dose"></textarea>
+    <button class="btn" onclick="approveCase()">Approve & Create Case File</button>
 </div>
 
 </div>
 
 <script>
-// LOAD AI ANSWERS
 const answers = JSON.parse(localStorage.getItem("aiCaseData")) || [];
 const container = document.getElementById("aiAnswers");
 
@@ -150,16 +116,54 @@ answers.forEach(item => {
     container.appendChild(div);
 });
 
-// SIMPLE AI AUTO-SUMMARY (DEMO LOGIC)
-document.getElementById("chief").value = answers[0]?.answer || "";
-document.getElementById("modalities").value = answers[4]?.answer + " | Better: " + (answers[5]?.answer || "");
-document.getElementById("physical").value = answers[6]?.answer + " | Food: " + (answers[7]?.answer || "");
-document.getElementById("mental").value = answers[8]?.answer + " | Company preference: " + (answers[9]?.answer || "");
-document.getElementById("history").value = "Sleep: " + (answers[10]?.answer || "");
+// AUTO SUMMARY
+chief.value = answers[0]?.answer || "";
+modalities.value = (answers[4]?.answer || "") + " | Better: " + (answers[5]?.answer || "");
+physical.value = answers[6]?.answer || "";
+mental.value = answers[8]?.answer || "";
 
-// FINALIZE CASE
-function finalizeCase() {
-    alert("Case approved and moved to main patient file (demo)");
+// RUBRIC EXTRACTION (DEMO AI LOGIC)
+const rubricBox = document.getElementById("rubrics");
+const rubricList = ["Head pain – throbbing", "Worse motion", "Better rest", "Thirstless", "Emotional sensitivity"];
+rubricList.forEach(r => {
+    const span = document.createElement("span");
+    span.className = "rubric";
+    span.innerText = r;
+    rubricBox.appendChild(span);
+});
+
+// REMEDY DIFFERENTIATION (DEMO)
+const remedyBox = document.getElementById("remedySuggestions");
+const remedies = [
+    {name:"Bryonia", notes:"Worse motion, better rest, dryness"},
+    {name:"Pulsatilla", notes:"Thirstless, emotional, better company"},
+    {name:"Nat Mur", notes:"Reserved, grief history, headaches"}
+];
+remedies.forEach(r => {
+    const div = document.createElement("div");
+    div.className = "remedy-box";
+    div.innerHTML = `<strong>${r.name}</strong><br>${r.notes}`;
+    remedyBox.appendChild(div);
+});
+
+// APPROVE CASE
+function approveCase() {
+    const caseFile = {
+        patient: "Riya Patel",
+        remedy: finalRemedy.value,
+        potency: potency.value,
+        dose: dose.value,
+        summary: chief.value
+    };
+
+    let allCases = JSON.parse(localStorage.getItem("patientCases")) || [];
+    allCases.push(caseFile);
+    localStorage.setItem("patientCases", JSON.stringify(allCases));
+
+    // Notify doctor dashboard
+    localStorage.setItem("doctorNotification", "New AI case approved and added");
+
+    alert("Case moved to patient file successfully!");
 }
 </script>
 
