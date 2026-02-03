@@ -203,6 +203,17 @@ function checkReminders() {
 }
 
 checkReminders();
+    function analyzeFollowUp(previous, current) {
+    if (current > previous) return "Improvement";
+    if (current < previous) return "Aggravation";
+    return "No Change";
+}
+
+// Example usage
+let lastScore = 2; // previous visit
+let newScore = document.querySelector("input[type=range]").value;
+
+console.log("AI Follow-up Analysis:", analyzeFollowUp(lastScore, newScore));
 </script>
 
 </body>
