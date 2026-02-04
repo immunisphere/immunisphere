@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>View Prescription</title>
 
-  <!-- jsPDF Library -->
+  <!-- jsPDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -22,28 +22,22 @@
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.08);
     }
-    h1 {
-      text-align: center;
-      color: #2a4d69;
-    }
-    input {
+    h1 { text-align: center; color: #2a4d69; }
+    input, button {
       width: 100%;
       padding: 10px;
       margin-top: 10px;
       border-radius: 5px;
-      border: 1px solid #ccc;
+      font-size: 14px;
     }
+    input { border: 1px solid #ccc; }
     button {
-      margin-top: 12px;
-      padding: 10px;
-      width: 100%;
       border: none;
       background: #2a4d69;
       color: white;
-      font-size: 14px;
-      border-radius: 5px;
       cursor: pointer;
     }
+    .download-btn { background: #1b7f5a; }
     .result {
       margin-top: 20px;
       background: #f9f9f9;
@@ -51,20 +45,14 @@
       border-radius: 6px;
       display: none;
     }
-    .label {
-      font-weight: bold;
-      margin-top: 8px;
-    }
-    .download-btn {
-      background: #1b7f5a;
-    }
+    .label { font-weight: bold; margin-top: 8px; }
   </style>
 </head>
 <body>
 
 <div class="container">
   <h1>Check Your Prescription</h1>
-  <input type="text" id="caseIdInput" placeholder="Enter Your Case ID (e.g., CASE_123456)" />
+  <input type="text" id="caseIdInput" placeholder="Enter Your Case ID" />
   <button onclick="fetchPrescription()">View Prescription</button>
 
   <div class="result" id="resultBox">
@@ -98,62 +86,74 @@
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
-  let currentPrescriptionData = null; // store for PDF
+  let currentData = null;
 
   window.fetchPrescription = function() {
     const caseId = document.getElementById("caseIdInput").value.trim();
+    if (!caseId) return alert("Please enter your Case ID");
 
-    if (!caseId) {
-      alert("Please enter your Case ID");
-      return;
-    }
+    get(ref(database, 'cases/' + caseId)).then((snapshot) => {
+      if (!snapshot.exists()) return alert("Invalid Case ID");
 
-    const caseRef = ref(database, 'cases/' + caseId);
+      const data = snapshot.val();
+      currentData = { ...data, caseId };
 
-    get(caseRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        const data = snapshot.val();
-        currentPrescriptionData = { ...data, caseId };
+      pName.innerText = data.name || "N/A";
+      pText.innerText = data.prescription || "Prescription not yet added.";
+      pStatus.innerText = data.status || "Pending";
 
-        document.getElementById("pName").innerText = data.name || "N/A";
-        document.getElementById("pText").innerText = data.prescription || "Prescription not yet added by doctor.";
-        document.getElementById("pStatus").innerText = data.status || "Pending";
-
-        document.getElementById("resultBox").style.display = "block";
-      } else {
-        alert("Invalid Case ID. Please check again.");
-      }
+      resultBox.style.display = "block";
     });
   }
 
-  window.downloadPDF = function() {
-    if (!currentPrescriptionData) {
-      alert("Please load prescription first.");
-      return;
-    }
+  window.downloadPDF = async function() {
+    if (!currentData) return alert("Load prescription first");
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
+    const logoUrl = "https://via.placeholder.com/120x50?text=Clinic+Logo";
+    const signatureUrl = "https://via.placeholder.com/120x50?text=Doctor+Sign";
+
+    const today = new Date().toLocaleDateString();
+
+    // Load images
+    const loadImage = url => new Promise(resolve => {
+      const img = new Image();
+      img.crossOrigin = "Anonymous";
+      img.onload = () => resolve(img);
+      img.src = url;
+    });
+
+    const logoImg = await loadImage(logoUrl);
+    const signImg = await loadImage(signatureUrl);
+
+    doc.addImage(logoImg, "PNG", 15, 10, 40, 15);
+
     doc.setFontSize(18);
-    doc.text("Homeopathic Prescription", 20, 20);
+    doc.text("Homeopathic Prescription", 105, 20, null, null, "center");
 
-    doc.setFontSize(12);
-    doc.text(`Case ID: ${currentPrescriptionData.caseId}`, 20, 35);
-    doc.text(`Patient Name: ${currentPrescriptionData.name}`, 20, 45);
-    doc.text(`Status: ${currentPrescriptionData.status}`, 20, 55);
+    doc.setFontSize(11);
+    doc.text(`Date: ${today}`, 150, 30);
+    doc.text(`Case ID: ${currentData.caseId}`, 20, 40);
+    doc.text(`Patient Name: ${currentData.name}`, 20, 48);
 
-    doc.text("Prescription:", 20, 70);
+    doc.text("Prescription:", 20, 65);
+    const splitRx = doc.splitTextToSize(currentData.prescription || "Not prescribed yet", 170);
+    doc.text(splitRx, 20, 75);
 
-    const splitText = doc.splitTextToSize(
-      currentPrescriptionData.prescription || "Not yet prescribed",
-      170
-    );
-    doc.text(splitText, 20, 80);
+    doc.text("Follow-Up Instructions:", 20, 120);
+    doc.text("• Take medicines as directed.", 25, 128);
+    doc.text("• Avoid strong smelling substances (coffee, camphor, etc.).", 25, 136);
+    doc.text("• Follow up after 4 weeks or earlier if symptoms change.", 25, 144);
 
-    doc.text("— Immunisphere Homeopathy —", 20, 270);
+    doc.addImage(signImg, "PNG", 140, 230, 40, 20);
+    doc.text("Dr. ____________", 140, 255);
+    doc.text("BHMS, MD (Hom)", 140, 262);
 
-    doc.save(`Prescription_${currentPrescriptionData.caseId}.pdf`);
+    doc.text("— Immunisphere Homeopathy —", 105, 280, null, null, "center");
+
+    doc.save(`Prescription_${currentData.caseId}.pdf`);
   }
 </script>
 
