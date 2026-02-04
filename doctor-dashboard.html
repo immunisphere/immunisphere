@@ -39,6 +39,15 @@
       font-weight: bold;
       color: green;
     }
+    textarea {
+      width: 100%;
+      margin-top: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 13px;
+      resize: vertical;
+    }
     button {
       margin-top: 8px;
       padding: 6px 10px;
@@ -49,6 +58,9 @@
       cursor: pointer;
       font-size: 12px;
     }
+    button:hover {
+      background: #1e3d59;
+    }
   </style>
 </head>
 <body>
@@ -58,7 +70,6 @@
   Loading cases...
 </div>
 
-<!-- 🔥 Firebase + Dashboard Logic -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
   import { getDatabase, ref, onValue, update } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
@@ -101,6 +112,12 @@
           <p><strong>Main Complaint:</strong> ${caseItem.main_complaint || "N/A"}</p>
           <p><strong>Duration:</strong> ${caseItem.duration || "N/A"}</p>
           <p class="status">Status: ${caseItem.status}</p>
+
+          <label><strong>Prescription:</strong></label>
+          <textarea id="prescription-${caseItem.caseId}" rows="3"
+            placeholder="Enter remedy, potency, dosage, instructions...">${caseItem.prescription || ""}</textarea>
+
+          <button onclick="savePrescription('${caseItem.caseId}')">Save Prescription</button>
           <button onclick="markReviewed('${caseItem.caseId}')">Mark as Reviewed</button>
         `;
 
@@ -108,6 +125,23 @@
       }
     });
   });
+
+  window.savePrescription = function(caseId) {
+    const text = document.getElementById("prescription-" + caseId).value;
+
+    if (!text.trim()) {
+      alert("Please enter prescription before saving.");
+      return;
+    }
+
+    update(ref(database, 'cases/' + caseId), {
+      prescription: text,
+      status: "Prescription Added",
+      prescriptionTime: new Date().toISOString()
+    }).then(() => {
+      alert("Prescription saved successfully!");
+    });
+  };
 
   window.markReviewed = function(caseId) {
     update(ref(database, 'cases/' + caseId), {
