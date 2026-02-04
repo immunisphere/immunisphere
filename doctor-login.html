@@ -41,5 +41,79 @@
       cursor: pointer;
     }
     button:hover { background: #1a252f; }
-    .error
+    .error { color: red; text-align: center; margin-top: 10px; }
+  </style>
+</head>
+<body>
+
+<div class="login-box">
+  <h2>Doctor Login</h2>
+  <input type="email" id="email" placeholder="Email" />
+  <input type="password" id="password" placeholder="Password" />
+  <button id="loginBtn">Login</button>
+  <div class="error" id="errorMsg"></div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+// 🔥 REPLACE WITH YOUR FIREBASE CONFIG
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_MSG_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+const loginBtn = document.getElementById("loginBtn");
+const errorMsg = document.getElementById("errorMsg");
+
+loginBtn.addEventListener("click", async () => {
+  errorMsg.textContent = "";
+
+  const email = document.getElementById("email").value.trim();
+  const password = document.getElementById("password").value.trim();
+
+  if (!email || !password) {
+    errorMsg.textContent = "Please enter email and password.";
+    return;
+  }
+
+  try {
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
+
+    // ✅ Check role in Firestore
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+
+    if (!docSnap.exists()) {
+      errorMsg.textContent = "User profile not found in database.";
+      return;
+    }
+
+    if (docSnap.data().role !== "doctor") {
+      errorMsg.textContent = "Access denied. Not a doctor account.";
+      return;
+    }
+
+    // 🎉 Success → Go to dashboard
+    window.location.href = "doctor-dashboard.html";
+
+  } catch (error) {
+    console.error(error);
+    errorMsg.textContent = error.message;
+  }
+});
+</script>
+
+</body>
+</html>
 
