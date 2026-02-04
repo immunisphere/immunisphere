@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Consultation Payment</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Arial; background:#f4f7fb; padding:20px; }
+    .box {
+      max-width:500px; margin:auto; background:white; padding:25px;
+      border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);
+      text-align:center;
+    }
+    h2 { color:#2a4d69; }
+    .price { font-size:22px; margin:15px 0; color:#1e3d59; }
+    button {
+      background:#2a4d69; color:white; border:none;
+      padding:12px 20px; font-size:16px; border-radius:5px;
+      cursor:pointer;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h2>Complete Your Consultation Payment</h2>
+  <p id="caseDisplay"></p>
+  <div class="price">Consultation Fee: ₹999</div>
+  <button onclick="makePayment()">Proceed to Pay</button>
+</div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+
+<script>
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  const caseId = localStorage.getItem("currentCaseId");
+  document.getElementById("caseDisplay").innerText = "Case ID: " + caseId;
+
+  function makePayment() {
+    // Simulated payment success
+    alert("Payment Successful!");
+
+    // Update case status
+    database.ref("cases/" + caseId).update({
+      status: "Paid - Awaiting Doctor Review"
+    }).then(() => {
+      window.location.href = "thank-you.html";
+    });
+  }
+</script>
+
+</body>
+</html>
