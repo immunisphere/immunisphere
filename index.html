@@ -5,107 +5,152 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Immunisphere Homeopathy</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
+      font-family: 'Poppins', sans-serif;
+      background: #f6fbff;
       color: #333;
     }
 
+    /* HEADER */
     header {
-      background: #2e8b57;
-      padding: 15px 20px;
+      background: linear-gradient(135deg, #2e8b57, #3cb371);
+      padding: 20px;
       text-align: center;
       color: white;
     }
 
     .logo-container {
-      background-color: #87CEEB;
-      padding: 10px 20px;
-      border-radius: 8px;
+      background: #87CEEB;
       display: inline-block;
-      margin-bottom: 10px;
+      padding: 12px 25px;
+      border-radius: 12px;
+      margin-bottom: 12px;
     }
 
     .logo-container img {
-      height: 70px;
-      width: auto;
+      height: 75px;
       display: block;
     }
 
     header h1 {
-      margin: 10px 0 5px 0;
-      font-size: 26px;
+      margin: 8px 0 5px;
+      font-weight: 600;
+      letter-spacing: 1px;
     }
 
     header p {
       margin: 0;
       font-size: 14px;
+      opacity: 0.95;
     }
 
+    /* HERO */
     .hero {
       text-align: center;
-      padding: 40px 20px;
-      background: white;
+      padding: 70px 20px 60px;
+      background: linear-gradient(to bottom, #ffffff, #e6f7ff);
     }
 
     .hero h2 {
-      color: #2a4d69;
-      margin-bottom: 10px;
+      font-size: 32px;
+      color: #1e3d59;
+      margin-bottom: 15px;
     }
 
     .hero p {
-      max-width: 600px;
+      max-width: 650px;
       margin: auto;
-      font-size: 15px;
-      line-height: 1.6;
+      font-size: 16px;
+      line-height: 1.7;
+      color: #555;
     }
 
     .cta-btn {
-      margin-top: 20px;
-      padding: 12px 20px;
-      font-size: 14px;
+      margin-top: 30px;
+      padding: 14px 28px;
+      font-size: 15px;
+      border-radius: 30px;
       border: none;
-      border-radius: 5px;
       cursor: pointer;
-      background: #2a4d69;
+      background: linear-gradient(135deg, #2a4d69, #4b86b4);
       color: white;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+      transition: 0.3s;
     }
 
+    .cta-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+    }
+
+    /* SECTION TITLE */
     .section {
-      padding: 40px 20px;
+      padding: 70px 20px;
       text-align: center;
     }
 
+    .section h2 {
+      font-size: 26px;
+      color: #2a4d69;
+      margin-bottom: 15px;
+    }
+
+    /* SERVICES */
     .services {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      margin-top: 20px;
+      gap: 25px;
+      margin-top: 40px;
     }
 
     .card {
       background: white;
-      width: 280px;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+      width: 300px;
+      padding: 25px;
+      border-radius: 14px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transition: 0.3s;
       text-align: left;
     }
 
-    .card h3 {
-      margin-top: 0;
-      color: #1e3d59;
+    .card:hover {
+      transform: translateY(-6px);
     }
 
+    .card h3 {
+      color: #1e3d59;
+      margin-top: 0;
+    }
+
+    .price {
+      font-size: 18px;
+      font-weight: 600;
+      color: #2e8b57;
+      margin-top: 10px;
+    }
+
+    /* WHY US */
+    .features {
+      max-width: 700px;
+      margin: 40px auto 0;
+      text-align: left;
+      line-height: 1.9;
+      font-size: 15px;
+    }
+
+    /* FOOTER */
     footer {
       background: #1e3d59;
       color: white;
       text-align: center;
-      padding: 15px;
+      padding: 20px;
       font-size: 13px;
+      margin-top: 40px;
     }
   </style>
 </head>
@@ -115,64 +160,67 @@
   <!-- HEADER -->
   <header>
     <div class="logo-container">
-      <img src="logo.png" alt="Immunisphere Logo" />
+      <img src="logo.png" alt="Immunisphere Logo">
     </div>
     <h1>Immunisphere Homeopathy</h1>
-    <p>Holistic Healing • Safe Remedies • Personalized Care</p>
+    <p>Natural Healing • Personalized Care • Online Consultations</p>
   </header>
 
   <!-- HERO -->
   <section class="hero">
-    <h2>Your Health, Our Natural Care</h2>
+    <h2>Gentle Healing for a Healthier You 🌿</h2>
     <p>
-      We provide professional homeopathic consultations through AI-assisted case
-      analysis and expert doctor review. Get personalized treatment plans and
-      doorstep medicine delivery.
+      Experience safe and holistic homeopathic treatment from qualified doctors.
+      We combine traditional healing wisdom with modern digital consultation for
+      convenient, personalized care.
     </p>
     <button class="cta-btn" onclick="location.href='book-consultation.html'">
-      Book Consultation
+      Book Your Consultation
     </button>
   </section>
 
   <!-- SERVICES -->
   <section class="section">
-    <h2>Consultation Options</h2>
+    <h2>Our Consultation Plans</h2>
 
     <div class="services">
 
       <div class="card">
-        <h3>AI Case Taking</h3>
-        <p>Complete digital case analysis with doctor review and prescription.</p>
-        <p><strong>₹999</strong> (Includes 1 month medicine)</p>
+        <h3>AI Case Analysis</h3>
+        <p>Digital case taking with expert doctor review and prescription.</p>
+        <div class="price">₹999 (1 Month Medicine)</div>
       </div>
 
       <div class="card">
         <h3>Phone Consultation</h3>
-        <p>Speak directly with a homeopathic doctor for personalized guidance.</p>
-        <p><strong>₹1499</strong> (Includes 1 month medicine)</p>
+        <p>Talk directly with a homeopathic doctor for guided treatment.</p>
+        <div class="price">₹1499 (1 Month Medicine)</div>
       </div>
 
       <div class="card">
         <h3>Video Consultation</h3>
-        <p>Face-to-face video consultation with detailed evaluation.</p>
-        <p><strong>₹1899</strong> (Includes 1 month medicine)</p>
+        <p>Face-to-face video session for detailed evaluation and care.</p>
+        <div class="price">₹1899 (1 Month Medicine)</div>
       </div>
 
     </div>
   </section>
 
   <!-- WHY US -->
-  <section class="section" style="background:white;">
-    <h2>Why Choose Immunisphere?</h2>
-    <p>✔ Experienced Homeopathic Doctors</p>
-    <p>✔ Safe, Natural & Side-Effect Free Treatment</p>
-    <p>✔ Personalized Prescriptions</p>
-    <p>✔ Online Consultation Across India</p>
+  <section class="section" style="background:#ffffff;">
+    <h2>Why Patients Trust Immunisphere</h2>
+    <div class="features">
+      ✔ Experienced & Qualified Homeopathic Doctors<br>
+      ✔ Safe, Natural & Side-Effect Free Remedies<br>
+      ✔ Personalized Treatment Plans<br>
+      ✔ Easy Online Consultations Across India<br>
+      ✔ Continuous Follow-up & Support
+    </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    © 2026 Immunisphere Homeopathy | All Rights Reserved
+    © 2026 Immunisphere Homeopathy | Healing Naturally 🌿
   </footer>
 
 </body>
