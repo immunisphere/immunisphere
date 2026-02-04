@@ -3,79 +3,18 @@
 <head>
   <title>Doctor Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    body { font-family: Arial; margin:0; background:#f4f6f9; }
-    header {
-      background:#2c3e50;
-      color:white;
-      padding:15px;
-      display:flex;
-      justify-content:space-between;
-      align-items:center;
-    }
-    button {
-      padding:8px 12px;
-      border:none;
-      border-radius:6px;
-      cursor:pointer;
-    }
-    .logout { background:#e74c3c; color:white; }
-    .container { padding:20px; }
-    .card {
-      background:white;
-      padding:15px;
-      margin-bottom:15px;
-      border-radius:10px;
-      box-shadow:0 2px 8px rgba(0,0,0,0.08);
-    }
-    input, textarea {
-      width:100%;
-      padding:8px;
-      margin-top:5px;
-      margin-bottom:10px;
-    }
-    .patient-btn {
-      background:#3498db;
-      color:white;
-      margin-top:10px;
-    }
-  </style>
 </head>
 <body>
-
-<header>
   <h2>Doctor Dashboard</h2>
-  <button class="logout" id="logoutBtn">Logout</button>
-</header>
-
-<div class="container">
-
-  <h3>Patients</h3>
-  <div id="patientList">Loading patients...</div>
-
-  <div id="prescriptionSection" style="display:none;">
-    <h3>Write Prescription for <span id="patientName"></span></h3>
-    
-    <label>Diagnosis</label>
-    <input type="text" id="diagnosis">
-
-    <label>Medicines (one per line: Name - Dosage - Duration)</label>
-    <textarea id="medicines" rows="4"></textarea>
-
-    <label>Advice</label>
-    <textarea id="advice" rows="3"></textarea>
-
-    <button id="savePrescription" class="patient-btn">Save Prescription</button>
-  </div>
-
-</div>
+  <button id="logoutBtn">Logout</button>
+  <div id="status">Checking login...</div>
+  <div id="patientList"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
 
-/* 🔥 YOUR REAL FIREBASE CONFIG */
 const firebaseConfig = {
   apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
   authDomain: "immunisphere-f6239.firebaseapp.com",
@@ -89,114 +28,47 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-let currentDoctorId = null;
-let selectedPatientId = null;
+const statusDiv = document.getElementById("status");
+const patientList = document.getElementById("patientList");
 
-/* 🔐 Doctor Authentication + Role Check */
+// 🔐 WAIT for auth to fully initialize
 onAuthStateChanged(auth, async (user) => {
-  console.log("Auth user:", user);
+  console.log("Auth state:", user);
 
-  if (!user) {
-    console.log("No user logged in → redirect");
-    window.location.href = "doctor-login.html";
-    return;
-  }
-
-  console.log("Logged in UID:", user.uid);
-
-  try {
-    const docRef = doc(db, "users", user.uid);
-    const docSnap = await getDoc(docRef);
-
-    console.log("Firestore exists?", docSnap.exists());
-
-    if (!docSnap.exists()) {
-      alert("No Firestore profile found for this user");
-      return;
-    }
-
-    console.log("Firestore data:", docSnap.data());
-
-    if (docSnap.data().role !== "doctor") {
-      alert("Access denied. Role is: " + docSnap.data().role);
-      return;
-    }
-
-    console.log("Doctor verified ✔");
-    currentDoctorId = user.uid;
+  if (user) {
+    statusDiv.innerText = "Logged in as Doctor";
     loadPatients();
-
-  } catch (error) {
-    console.error("Error reading Firestore:", error);
+  } else {
+    statusDiv.innerText = "Not logged in. Redirecting...";
+    setTimeout(() => {
+      window.location.href = "doctor-login.html";
+    }, 1500);
   }
 });
 
-/* 🚪 Logout */
+// 🚪 Logout
 document.getElementById("logoutBtn").onclick = () => {
-  signOut(auth).then(() => window.location.href = "doctor-login.html");
+  signOut(auth).then(() => {
+    window.location.href = "doctor-login.html";
+  });
 };
 
-/* 👥 Load Patients */
+// 👥 Load Patients
 async function loadPatients() {
+  patientList.innerHTML = "Loading patients...";
   const querySnapshot = await getDocs(collection(db, "users"));
-  const patientList = document.getElementById("patientList");
-  patientList.innerHTML = "";
 
-  querySnapshot.forEach(docSnap => {
-    const data = docSnap.data();
+  patientList.innerHTML = "";
+  querySnapshot.forEach(doc => {
+    const data = doc.data();
     if (data.role === "patient") {
       const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <strong>${data.name}</strong><br>
-        ${data.email}<br>
-        <button class="patient-btn" data-id="${docSnap.id}" data-name="${data.name}">Open</button>
-      `;
+      div.innerHTML = `<p>${data.name} (${data.email})</p>`;
       patientList.appendChild(div);
     }
   });
-
-  document.querySelectorAll(".patient-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-      selectedPatientId = btn.dataset.id;
-      document.getElementById("patientName").innerText = btn.dataset.name;
-      document.getElementById("prescriptionSection").style.display = "block";
-      window.scrollTo(0, document.body.scrollHeight);
-    });
-  });
 }
-
-/* 💊 Save Prescription */
-document.getElementById("savePrescription").onclick = async () => {
-  const diagnosis = document.getElementById("diagnosis").value;
-  const advice = document.getElementById("advice").value;
-  const medLines = document.getElementById("medicines").value.split("\n");
-
-  const medicines = medLines.map(line => {
-    const parts = line.split("-");
-    return {
-      name: parts[0]?.trim(),
-      dosage: parts[1]?.trim(),
-      duration: parts[2]?.trim()
-    };
-  });
-
-  await addDoc(collection(db, "prescriptions"), {
-    patientId: selectedPatientId,
-    doctorId: currentDoctorId,
-    diagnosis,
-    advice,
-    medicines,
-    date: Date.now()
-  });
-
-  alert("Prescription saved!");
-  document.getElementById("diagnosis").value = "";
-  document.getElementById("medicines").value = "";
-  document.getElementById("advice").value = "";
-};
 </script>
-
 </body>
 </html>
 
