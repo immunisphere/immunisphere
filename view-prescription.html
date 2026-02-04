@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Prescription</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #2a4d69;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+    button {
+      margin-top: 12px;
+      padding: 10px;
+      width: 100%;
+      border: none;
+      background: #2a4d69;
+      color: white;
+      font-size: 14px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      display: none;
+    }
+    .label {
+      font-weight: bold;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Check Your Prescription</h1>
+  <input type="text" id="caseIdInput" placeholder="Enter Your Case ID (e.g., CASE_123456)" />
+  <button onclick="fetchPrescription()">View Prescription</button>
+
+  <div class="result" id="resultBox">
+    <div class="label">Patient Name:</div>
+    <div id="pName"></div>
+
+    <div class="label">Prescription:</div>
+    <div id="pText"></div>
+
+    <div class="label">Doctor Status:</div>
+    <div id="pStatus"></div>
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
+    authDomain: "immunisphere-f6239.firebaseapp.com",
+    projectId: "immunisphere-f6239",
+    storageBucket: "immunisphere-f6239.firebasestorage.app",
+    messagingSenderId: "141342230101",
+    appId: "1:141342230101:web:f9ba568327657e643536dc",
+    databaseURL: "https://immunisphere-f6239-default-rtdb.firebaseio.com"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  window.fetchPrescription = function() {
+    const caseId = document.getElementById("caseIdInput").value.trim();
+
+    if (!caseId) {
+      alert("Please enter your Case ID");
+      return;
+    }
+
+    const caseRef = ref(database, 'cases/' + caseId);
+
+    get(caseRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+
+        document.getElementById("pName").innerText = data.name || "N/A";
+        document.getElementById("pText").innerText = data.prescription || "Prescription not yet added by doctor.";
+        document.getElementById("pStatus").innerText = data.status || "Pending";
+
+        document.getElementById("resultBox").style.display = "block";
+      } else {
+        alert("Invalid Case ID. Please check again.");
+      }
+    });
+  }
+</script>
+
+</body>
+</html>
