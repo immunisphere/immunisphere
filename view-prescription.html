@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>View Prescription</title>
 
+  <!-- jsPDF Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -52,6 +55,9 @@
       font-weight: bold;
       margin-top: 8px;
     }
+    .download-btn {
+      background: #1b7f5a;
+    }
   </style>
 </head>
 <body>
@@ -70,6 +76,8 @@
 
     <div class="label">Doctor Status:</div>
     <div id="pStatus"></div>
+
+    <button class="download-btn" onclick="downloadPDF()">Download Prescription PDF</button>
   </div>
 </div>
 
@@ -90,6 +98,8 @@
   const app = initializeApp(firebaseConfig);
   const database = getDatabase(app);
 
+  let currentPrescriptionData = null; // store for PDF
+
   window.fetchPrescription = function() {
     const caseId = document.getElementById("caseIdInput").value.trim();
 
@@ -103,6 +113,7 @@
     get(caseRef).then((snapshot) => {
       if (snapshot.exists()) {
         const data = snapshot.val();
+        currentPrescriptionData = { ...data, caseId };
 
         document.getElementById("pName").innerText = data.name || "N/A";
         document.getElementById("pText").innerText = data.prescription || "Prescription not yet added by doctor.";
@@ -113,6 +124,36 @@
         alert("Invalid Case ID. Please check again.");
       }
     });
+  }
+
+  window.downloadPDF = function() {
+    if (!currentPrescriptionData) {
+      alert("Please load prescription first.");
+      return;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    doc.setFontSize(18);
+    doc.text("Homeopathic Prescription", 20, 20);
+
+    doc.setFontSize(12);
+    doc.text(`Case ID: ${currentPrescriptionData.caseId}`, 20, 35);
+    doc.text(`Patient Name: ${currentPrescriptionData.name}`, 20, 45);
+    doc.text(`Status: ${currentPrescriptionData.status}`, 20, 55);
+
+    doc.text("Prescription:", 20, 70);
+
+    const splitText = doc.splitTextToSize(
+      currentPrescriptionData.prescription || "Not yet prescribed",
+      170
+    );
+    doc.text(splitText, 20, 80);
+
+    doc.text("— Immunisphere Homeopathy —", 20, 270);
+
+    doc.save(`Prescription_${currentPrescriptionData.caseId}.pdf`);
   }
 </script>
 
