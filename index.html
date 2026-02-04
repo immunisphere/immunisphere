@@ -1,138 +1,179 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ImmuniSphere – Healing That Protects</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Immunisphere Homeopathy</title>
 
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            color: #1a1a1a;
-        }
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      color: #333;
+    }
 
-        /* NAVIGATION */
-        nav {
-            background: #0f6cab;
-            padding: 12px 20px;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
+    header {
+      background: #2e8b57;
+      padding: 15px 20px;
+      text-align: center;
+      color: white;
+    }
 
-        /* HEADER / HERO */
-        header {
-            background: linear-gradient(90deg,#0f6cab,#2bb673);
-            color: white;
-            padding: 80px 20px;
-            text-align: center;
-        }
+    .logo-container {
+      background-color: #87CEEB;
+      padding: 10px 20px;
+      border-radius: 8px;
+      display: inline-block;
+      margin-bottom: 10px;
+    }
 
-        /* BIG LOGO */
-        header img {
-            width: 220px;
-            max-width: 80%;
-            margin-bottom: 25px;
-            filter: drop-shadow(0 6px 12px rgba(0,0,0,0.25));
-        }
+    .logo-container img {
+      height: 70px;
+      width: auto;
+      display: block;
+    }
 
-        h1 {
-            margin: 0;
-            font-size: 42px;
-        }
+    header h1 {
+      margin: 10px 0 5px 0;
+      font-size: 26px;
+    }
 
-        h2 {
-            color: #0f6cab;
-        }
+    header p {
+      margin: 0;
+      font-size: 14px;
+    }
 
-        section {
-            padding: 50px 20px;
-            max-width: 1000px;
-            margin: auto;
-        }
+    .hero {
+      text-align: center;
+      padding: 40px 20px;
+      background: white;
+    }
 
-        .btn {
-            background:#2bb673;
-            color:white;
-            padding:15px 25px;
-            text-decoration:none;
-            border-radius:5px;
-            display:inline-block;
-            margin-top:15px;
-        }
+    .hero h2 {
+      color: #2a4d69;
+      margin-bottom: 10px;
+    }
 
-        footer {
-            background:#0f6cab;
-            color:white;
-            text-align:center;
-            padding:20px;
-        }
-    </style>
+    .hero p {
+      max-width: 600px;
+      margin: auto;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .cta-btn {
+      margin-top: 20px;
+      padding: 12px 20px;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #2a4d69;
+      color: white;
+    }
+
+    .section {
+      padding: 40px 20px;
+      text-align: center;
+    }
+
+    .services {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .card {
+      background: white;
+      width: 280px;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+      text-align: left;
+    }
+
+    .card h3 {
+      margin-top: 0;
+      color: #1e3d59;
+    }
+
+    footer {
+      background: #1e3d59;
+      color: white;
+      text-align: center;
+      padding: 15px;
+      font-size: 13px;
+    }
+  </style>
 </head>
+
 <body>
 
-<!-- NAVIGATION BAR -->
-<nav>
-    <a href="index.html">Home</a>
-    <a href="booking.html">Book Consultation</a>
-    <a href="doctor-login.html">Doctor Login</a>
-    <a href="patient-login.html">Patient Login</a>
-    <a href="#contact">Contact</a>
-</nav>
+  <!-- HEADER -->
+  <header>
+    <div class="logo-container">
+      <img src="logo.png" alt="Immunisphere Logo" />
+    </div>
+    <h1>Immunisphere Homeopathy</h1>
+    <p>Holistic Healing • Safe Remedies • Personalized Care</p>
+  </header>
 
-<header>
-    <img src="logo.png" alt="ImmuniSphere Logo">
-    <h1>ImmuniSphere</h1>
-    <p><strong>Healing That Protects</strong></p>
-    <p>Online Homeopathic Care Focused on Immunity, Prevention & Personalized Healing</p>
-    <a href="booking.html" class="btn">Book Consultation</a>
-</header>
+  <!-- HERO -->
+  <section class="hero">
+    <h2>Your Health, Our Natural Care</h2>
+    <p>
+      We provide professional homeopathic consultations through AI-assisted case
+      analysis and expert doctor review. Get personalized treatment plans and
+      doorstep medicine delivery.
+    </p>
+    <button class="cta-btn" onclick="location.href='book-consultation.html'">
+      Book Consultation
+    </button>
+  </section>
 
-<section>
-    <h2>Specialized Online Homeopathic Care</h2>
-    <p>ImmuniSphere is a digitally managed homeopathic clinic providing one-on-one consultations, individualized treatment plans, and guided lifestyle support — all from the comfort of your home.</p>
-</section>
+  <!-- SERVICES -->
+  <section class="section">
+    <h2>Consultation Options</h2>
 
-<section>
-    <h2>Doctor-Matched Personalized Care</h2>
-    <p>Our clinical coordination team assigns each case to the most suitable doctor based on condition, expertise, and availability. This ensures focused attention, balanced care, and consistent follow-up.</p>
-</section>
+    <div class="services">
 
-<section>
-    <h2>What Makes Us Different</h2>
-    <ul>
-        <li>Personalized Homeopathic Treatment</li>
-        <li>Immunity & Preventive Focus</li>
-        <li>Centrally Coordinated Medical Care</li>
-        <li>Assured Homeopathic Medicine Delivery</li>
-        <li>Continuous Follow-up Support</li>
-    </ul>
-</section>
+      <div class="card">
+        <h3>AI Case Taking</h3>
+        <p>Complete digital case analysis with doctor review and prescription.</p>
+        <p><strong>₹999</strong> (Includes 1 month medicine)</p>
+      </div>
 
-<section>
-    <h2>Safe & Reliable Medicine Supply</h2>
-    <p>Your prescribed homeopathic medicines are prepared and dispatched under professional supervision to ensure accuracy, quality, and continuity of treatment.</p>
-</section>
+      <div class="card">
+        <h3>Phone Consultation</h3>
+        <p>Speak directly with a homeopathic doctor for personalized guidance.</p>
+        <p><strong>₹1499</strong> (Includes 1 month medicine)</p>
+      </div>
 
-<section id="contact">
-    <h2>Contact Us</h2>
-    <p><strong>Email:</strong> info@immunisphere.com</p>
-    <p><strong>WhatsApp:</strong> +91-XXXXXXXXXX</p>
-    <p><strong>Hours:</strong> Mon–Sat, 9am–7pm</p>
-</section>
+      <div class="card">
+        <h3>Video Consultation</h3>
+        <p>Face-to-face video consultation with detailed evaluation.</p>
+        <p><strong>₹1899</strong> (Includes 1 month medicine)</p>
+      </div>
 
-<footer>
-    <p>ImmuniSphere – Healing That Protects</p>
-    <p>Online Homeopathic Consultations</p>
-</footer>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section class="section" style="background:white;">
+    <h2>Why Choose Immunisphere?</h2>
+    <p>✔ Experienced Homeopathic Doctors</p>
+    <p>✔ Safe, Natural & Side-Effect Free Treatment</p>
+    <p>✔ Personalized Prescriptions</p>
+    <p>✔ Online Consultation Across India</p>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 Immunisphere Homeopathy | All Rights Reserved
+  </footer>
 
 </body>
 </html>
