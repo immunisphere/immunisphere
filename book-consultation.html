@@ -1,94 +1,146 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Book Consultation – ImmuniSphere</title>
-<style>
-body {font-family: Arial, sans-serif; margin: 0; background:#f5f7fa;}
-nav {background: #0f6cab; padding: 12px 20px; text-align: center;}
-nav a {color: white; margin: 0 15px; text-decoration: none; font-weight: bold;}
-nav a:hover {text-decoration: underline;}
-.container {max-width: 800px; margin: 40px auto; background:white; padding:30px; border-radius:8px; box-shadow:0 4px 10px rgba(0,0,0,0.1);}
-h1 {color:#0f6cab;}
-label {font-weight:bold; display:block; margin-top:15px;}
-input, select, textarea {
-    width:100%;
-    padding:10px;
-    margin-top:5px;
-    border-radius:5px;
-    border:1px solid #ccc;
-}
-button {
-    margin-top:20px;
-    background:#2bb673;
-    color:white;
-    border:none;
-    padding:15px;
-    width:100%;
-    font-size:16px;
-    border-radius:5px;
-    cursor:pointer;
-}
-button:hover {opacity:0.9;}
-footer {background:#0f6cab; color:white; text-align:center; padding:20px; margin-top:40px;}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Consultation | Immunisphere</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 700px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2a4d69;
+    }
+
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 15px;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-top: 6px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      font-size: 15px;
+      border: none;
+      border-radius: 5px;
+      background: #2a4d69;
+      color: white;
+      cursor: pointer;
+    }
+
+    .note {
+      font-size: 13px;
+      color: gray;
+      margin-top: 10px;
+      text-align: center;
+    }
+  </style>
 </head>
 <body>
 
-<nav>
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="how-it-works.html">How It Works</a>
-    <a href="care-model.html">Care Model</a>
-    <a href="medicine-delivery.html">Medicine Delivery</a>
-    <a href="contact.html">Contact</a>
-</nav>
-
 <div class="container">
-    <h1>Book Your Consultation</h1>
-    <p>Please fill in your details. Our care team will assign the most suitable doctor for you.</p>
+  <h1>Book a Consultation</h1>
 
-    <form>
-        <label>Full Name</label>
-        <input type="text" required>
+  <form id="consultForm">
 
-        <label>Age</label>
-        <input type="number" required>
+    <label>Full Name</label>
+    <input type="text" id="name" required />
 
-        <label>Gender</label>
-        <select required>
-            <option value="">Select</option>
-            <option>Male</option>
-            <option>Female</option>
-            <option>Other</option>
-        </select>
+    <label>Age</label>
+    <input type="number" id="age" required />
 
-        <label>Phone Number (WhatsApp preferred)</label>
-        <input type="tel" required>
+    <label>Gender</label>
+    <select id="gender" required>
+      <option value="">Select</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
 
-        <label>Email Address</label>
-        <input type="email">
+    <label>Phone Number</label>
+    <input type="tel" id="phone" required />
 
-        <label>Main Health Concern</label>
-        <textarea rows="4" placeholder="Describe your symptoms or condition" required></textarea>
+    <label>Main Health Complaint</label>
+    <textarea id="complaint" required></textarea>
 
-        <label>How long have you had this issue?</label>
-        <input type="text" placeholder="e.g., 3 months, 2 years">
+    <label>Since How Long?</label>
+    <input type="text" id="duration" placeholder="e.g. 6 months" required />
 
-        <label>Preferred Consultation Mode</label>
-        <select>
-            <option>Video Call</option>
-            <option>Phone Call</option>
-        </select>
+    <label>Preferred Consultation Mode</label>
+    <select id="consultationMode" required>
+      <option value="">Select</option>
+      <option value="AI" data-price="999">AI Case Taking + Doctor Review (₹999)</option>
+      <option value="Phone" data-price="1499">Phone Consultation + Medicine (₹1499)</option>
+      <option value="Video" data-price="1899">Video Consultation + Medicine (₹1899)</option>
+    </select>
 
-        <button type="submit">Submit Consultation Request</button>
-    </form>
+    <button type="submit">Proceed to Payment</button>
+    <div class="note">You will be redirected to secure payment</div>
+
+  </form>
 </div>
 
-<footer>
-    <p>ImmuniSphere – Healing That Protects</p>
-</footer>
+<script>
+  document.getElementById("consultForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const caseId = "CASE_" + Date.now();
+
+    const selectedOption = document.getElementById("consultationMode");
+    const price = selectedOption.options[selectedOption.selectedIndex].dataset.price;
+    const mode = selectedOption.value;
+
+    const patientData = {
+      caseId,
+      name: name.value,
+      age: age.value,
+      gender: gender.value,
+      phone: phone.value,
+      main_complaint: complaint.value,
+      duration: duration.value,
+      consultationMode: mode,
+      amount: price,
+      status: "Pending Payment"
+    };
+
+    // Store temporarily before payment
+    localStorage.setItem("pendingCase", JSON.stringify(patientData));
+
+    // Redirect to payment page
+    window.location.href = `payment.html?caseId=${caseId}&amount=${price}`;
+  });
+</script>
 
 </body>
 </html>
