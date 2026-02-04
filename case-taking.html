@@ -167,6 +167,50 @@
     this.reset();
   });
 </script>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
 
+<script>
+  // 🔥 Your Firebase Config (REPLACE WITH YOURS)
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT.firebaseapp.com",
+    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+    projectId: "YOUR_PROJECT",
+    storageBucket: "YOUR_PROJECT.appspot.com",
+    messagingSenderId: "XXXX",
+    appId: "XXXX"
+  };
+
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  document.getElementById("caseForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+    const caseData = Object.fromEntries(formData.entries());
+
+    // Unique case ID
+    const caseId = "CASE_" + Date.now();
+
+    // Save to Firebase
+    database.ref("cases/" + caseId).set({
+      ...caseData,
+      caseId: caseId,
+      status: "Pending Payment",
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      // Store case ID locally to use on payment page
+      localStorage.setItem("currentCaseId", caseId);
+
+      // Redirect to payment
+      window.location.href = "payment.html";
+    }).catch((error) => {
+      alert("Error saving case: " + error.message);
+    });
+  });
+</script>
 </body>
 </html>
