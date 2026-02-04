@@ -1,62 +1,98 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Consultation Payment</title>
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Consultation Payment</title>
+
   <style>
-    body { font-family: Arial; background:#f4f7fb; padding:20px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      padding: 20px;
+    }
     .box {
-      max-width:500px; margin:auto; background:white; padding:25px;
-      border-radius:8px; box-shadow:0 0 10px rgba(0,0,0,0.1);
-      text-align:center;
+      max-width: 500px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
     }
-    h2 { color:#2a4d69; }
-    .price { font-size:22px; margin:15px 0; color:#1e3d59; }
+    h2 { color: #2a4d69; }
+    .case-id {
+      margin: 10px 0;
+      font-size: 14px;
+      color: #555;
+    }
+    .price {
+      font-size: 22px;
+      margin: 15px 0;
+      color: #1e3d59;
+      font-weight: bold;
+    }
     button {
-      background:#2a4d69; color:white; border:none;
-      padding:12px 20px; font-size:16px; border-radius:5px;
-      cursor:pointer;
+      background: #2a4d69;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
     }
+    button:hover { background: #1e3d59; }
   </style>
 </head>
 <body>
 
 <div class="box">
   <h2>Complete Your Consultation Payment</h2>
-  <p id="caseDisplay"></p>
+  <div class="case-id" id="caseDisplay">Loading case...</div>
   <div class="price">Consultation Fee: ₹999</div>
-  <button onclick="makePayment()">Proceed to Pay</button>
+  <button id="payBtn">Proceed to Pay</button>
 </div>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
+<!-- 🔥 Firebase + Payment Logic -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-<script>
   const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
+    apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
+    authDomain: "immunisphere-f6239.firebaseapp.com",
+    projectId: "immunisphere-f6239",
+    storageBucket: "immunisphere-f6239.firebasestorage.app",
+    messagingSenderId: "141342230101",
+    appId: "1:141342230101:web:f9ba568327657e643536dc",
+    databaseURL: "https://immunisphere-f6239-default-rtdb.firebaseio.com"
   };
 
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
 
   const caseId = localStorage.getItem("currentCaseId");
-  document.getElementById("caseDisplay").innerText = "Case ID: " + caseId;
 
-  function makePayment() {
-    // Simulated payment success
-    alert("Payment Successful!");
+  if (!caseId) {
+    document.getElementById("caseDisplay").innerText = "No case found. Please fill the form first.";
+    document.getElementById("payBtn").style.display = "none";
+  } else {
+    document.getElementById("caseDisplay").innerText = "Case ID: " + caseId;
+  }
 
-    // Update case status
-    database.ref("cases/" + caseId).update({
-      status: "Paid - Awaiting Doctor Review"
+  document.getElementById("payBtn").addEventListener("click", function() {
+    alert("Payment Successful! (Demo)");
+
+    update(ref(database, 'cases/' + caseId), {
+      status: "Paid - Awaiting Doctor Review",
+      paymentTime: new Date().toISOString()
     }).then(() => {
       window.location.href = "thank-you.html";
+    }).catch((error) => {
+      alert("Payment update failed: " + error.message);
     });
-  }
+  });
 </script>
 
 </body>
