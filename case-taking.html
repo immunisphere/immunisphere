@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Homeopathic Case Taking Form</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -42,16 +43,9 @@
       border: 1px solid #ccc;
       font-size: 14px;
     }
-    textarea {
-      resize: vertical;
-    }
-    .row {
-      display: flex;
-      gap: 15px;
-    }
-    .row > div {
-      flex: 1;
-    }
+    textarea { resize: vertical; }
+    .row { display: flex; gap: 15px; }
+    .row > div { flex: 1; }
     .submit-btn {
       margin-top: 25px;
       background: #2a4d69;
@@ -63,9 +57,7 @@
       border-radius: 5px;
       cursor: pointer;
     }
-    .submit-btn:hover {
-      background: #1e3d59;
-    }
+    .submit-btn:hover { background: #1e3d59; }
   </style>
 </head>
 <body>
@@ -106,7 +98,6 @@
     <input type="email" name="email">
 
     <h2>🩺 Main Complaints</h2>
-    <label>Describe your main problem(s)</label>
     <textarea name="main_complaint" rows="3" required></textarea>
 
     <label>Since when are you suffering?</label>
@@ -119,20 +110,18 @@
     <textarea name="amelioration" rows="2"></textarea>
 
     <h2>🧠 Mind & Emotions</h2>
-    <label>Stress, fears, anxiety, grief, anger etc.</label>
     <textarea name="mental_state" rows="3"></textarea>
 
     <label>Sleep pattern</label>
     <textarea name="sleep" rows="2"></textarea>
 
     <h2>🍽 General Symptoms</h2>
-    <label>Appetite & Thirst</label>
     <textarea name="appetite" rows="2"></textarea>
 
     <label>Food cravings or aversions</label>
     <textarea name="cravings" rows="2"></textarea>
 
-    <label>Sweat (excess, smell, body part)</label>
+    <label>Sweat details</label>
     <textarea name="sweat" rows="2"></textarea>
 
     <label>Thermal preference</label>
@@ -144,10 +133,9 @@
     </select>
 
     <h2>🩻 Past History</h2>
-    <label>Major illnesses, surgeries, accidents</label>
     <textarea name="past_history" rows="3"></textarea>
 
-    <label>Family history (diabetes, BP, cancer, etc.)</label>
+    <label>Family history</label>
     <textarea name="family_history" rows="2"></textarea>
 
     <h2>💊 Current Medication</h2>
@@ -160,76 +148,46 @@
   </form>
 </div>
 
-<script>
-  document.getElementById("caseForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-    alert("Case submitted successfully! Our team will review your case shortly.");
-    this.reset();
-  });
-</script>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"></script>
-
-<script>
-  // 🔥 Your Firebase Config (REPLACE WITH YOURS)
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-    projectId: "YOUR_PROJECT",
-    storageBucket: "YOUR_PROJECT.appspot.com",
-    messagingSenderId: "XXXX",
-    appId: "XXXX"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  document.getElementById("caseForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    const formData = new FormData(this);
-    const caseData = Object.fromEntries(formData.entries());
-
-    // Unique case ID
-    const caseId = "CASE_" + Date.now();
-
-    // Save to Firebase
-    database.ref("cases/" + caseId).set({
-      ...caseData,
-      caseId: caseId,
-      status: "Pending Payment",
-      timestamp: new Date().toISOString()
-    }).then(() => {
-      // Store case ID locally to use on payment page
-      localStorage.setItem("currentCaseId", caseId);
-
-      // Redirect to payment
-      window.location.href = "payment.html";
-    }).catch((error) => {
-      alert("Error saving case: " + error.message);
-    });
-  });
-</script>
-  <script type="module">
-  // Import the functions you need from the SDKs you need
+<!-- 🔥 Firebase + Form Submission Logic -->
+<script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { getDatabase, ref, set } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-database.js";
 
-  // Your web app's Firebase configuration
   const firebaseConfig = {
     apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
     authDomain: "immunisphere-f6239.firebaseapp.com",
     projectId: "immunisphere-f6239",
     storageBucket: "immunisphere-f6239.firebasestorage.app",
     messagingSenderId: "141342230101",
-    appId: "1:141342230101:web:f9ba568327657e643536dc"
+    appId: "1:141342230101:web:f9ba568327657e643536dc",
+    databaseURL: "https://immunisphere-f6239-default-rtdb.firebaseio.com"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  const form = document.getElementById("caseForm");
+
+  form.addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    const caseData = Object.fromEntries(formData.entries());
+    const caseId = "CASE_" + Date.now();
+
+    set(ref(database, 'cases/' + caseId), {
+      ...caseData,
+      caseId: caseId,
+      status: "Pending Payment",
+      timestamp: new Date().toISOString()
+    }).then(() => {
+      localStorage.setItem("currentCaseId", caseId);
+      window.location.href = "payment.html";
+    }).catch((error) => {
+      alert("Error saving case: " + error.message);
+    });
+  });
 </script>
+
 </body>
 </html>
