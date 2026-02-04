@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Prescriptions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: Arial, sans-serif; background:#f4f6f9; margin:0; padding:20px; }
+    h2 { text-align:center; }
+    .card {
+      background:white;
+      padding:15px;
+      margin-bottom:15px;
+      border-radius:10px;
+      box-shadow:0 2px 8px rgba(0,0,0,0.08);
+    }
+    .date { color:gray; font-size:14px; }
+    .medicine { margin-left:15px; }
+  </style>
+</head>
+<body>
+
+<h2>My Prescriptions</h2>
+<div id="prescriptionList">Loading...</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+  import { getFirestore, collection, query, where, getDocs, orderBy } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+  // 🔥 Your Firebase Config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_DOMAIN",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_BUCKET",
+    messagingSenderId: "YOUR_MSG_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+
+  const listDiv = document.getElementById("prescriptionList");
+
+  onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      listDiv.innerHTML = "Please login to view prescriptions.";
+      return;
+    }
+
+    const q = query(
+      collection(db, "prescriptions"),
+      where("patientId", "==", user.uid),
+      orderBy("date", "desc")
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    if (querySnapshot.empty) {
+      listDiv.innerHTML = "No prescriptions found.";
+      return;
+    }
+
+    listDiv.innerHTML = "";
+
+    querySnapshot.forEach(doc => {
+      const data = doc.data();
+
+      const card = document.createElement("div");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="date">Date: ${new Date(data.date).toLocaleDateString()}</div>
+        <h3>Diagnosis</h3>
+        <p>${data.diagnosis}</p>
+        <h3>Medicines</h3>
+        <ul>
+          ${data.medicines.map(med => `<li class="medicine">${med.name} - ${med.dosage} - ${med.duration}</li>`).join("")}
+        </ul>
+        <h3>Advice</h3>
+        <p>${data.advice || "—"}</p>
+      `;
+
+      listDiv.appendChild(card);
+    });
+  });
+</script>
+
+</body>
+</html>
