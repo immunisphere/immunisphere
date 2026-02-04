@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homeopathic Case Taking Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7fb;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.08);
+    }
+    h1 {
+      text-align: center;
+      color: #2a4d69;
+    }
+    h2 {
+      margin-top: 25px;
+      color: #1e3d59;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 5px;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-top: 12px;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    textarea {
+      resize: vertical;
+    }
+    .row {
+      display: flex;
+      gap: 15px;
+    }
+    .row > div {
+      flex: 1;
+    }
+    .submit-btn {
+      margin-top: 25px;
+      background: #2a4d69;
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .submit-btn:hover {
+      background: #1e3d59;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>Homeopathic Case Taking Form</h1>
+
+  <form id="caseForm">
+
+    <h2>👤 Patient Information</h2>
+    <div class="row">
+      <div>
+        <label>Full Name</label>
+        <input type="text" name="name" required>
+      </div>
+      <div>
+        <label>Age</label>
+        <input type="number" name="age" required>
+      </div>
+    </div>
+
+    <div class="row">
+      <div>
+        <label>Gender</label>
+        <select name="gender">
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div>
+        <label>Phone Number</label>
+        <input type="tel" name="phone" required>
+      </div>
+    </div>
+
+    <label>Email</label>
+    <input type="email" name="email">
+
+    <h2>🩺 Main Complaints</h2>
+    <label>Describe your main problem(s)</label>
+    <textarea name="main_complaint" rows="3" required></textarea>
+
+    <label>Since when are you suffering?</label>
+    <input type="text" name="duration">
+
+    <label>What makes it worse?</label>
+    <textarea name="aggravation" rows="2"></textarea>
+
+    <label>What makes it better?</label>
+    <textarea name="amelioration" rows="2"></textarea>
+
+    <h2>🧠 Mind & Emotions</h2>
+    <label>Stress, fears, anxiety, grief, anger etc.</label>
+    <textarea name="mental_state" rows="3"></textarea>
+
+    <label>Sleep pattern</label>
+    <textarea name="sleep" rows="2"></textarea>
+
+    <h2>🍽 General Symptoms</h2>
+    <label>Appetite & Thirst</label>
+    <textarea name="appetite" rows="2"></textarea>
+
+    <label>Food cravings or aversions</label>
+    <textarea name="cravings" rows="2"></textarea>
+
+    <label>Sweat (excess, smell, body part)</label>
+    <textarea name="sweat" rows="2"></textarea>
+
+    <label>Thermal preference</label>
+    <select name="thermal">
+      <option>Feels more hot</option>
+      <option>Feels more cold</option>
+      <option>Cannot tolerate heat</option>
+      <option>Cannot tolerate cold</option>
+    </select>
+
+    <h2>🩻 Past History</h2>
+    <label>Major illnesses, surgeries, accidents</label>
+    <textarea name="past_history" rows="3"></textarea>
+
+    <label>Family history (diabetes, BP, cancer, etc.)</label>
+    <textarea name="family_history" rows="2"></textarea>
+
+    <h2>💊 Current Medication</h2>
+    <textarea name="current_meds" rows="2"></textarea>
+
+    <h2>📎 Upload Medical Reports</h2>
+    <input type="file" name="reports" multiple>
+
+    <button type="submit" class="submit-btn">Submit Case</button>
+  </form>
+</div>
+
+<script>
+  document.getElementById("caseForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    alert("Case submitted successfully! Our team will review your case shortly.");
+    this.reset();
+  });
+</script>
+
+</body>
+</html>
