@@ -8,112 +8,153 @@
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
   <style>
-    body {
+    * {
       margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
       font-family: 'Poppins', sans-serif;
-      background: #f6fbff;
+      background: #f4f9f9;
       color: #333;
     }
 
-    /* HEADER */
-    header {
-      background: linear-gradient(135deg, #2e8b57, #3cb371);
-      padding: 20px;
-      text-align: center;
-      color: white;
+    /* NAVBAR */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
+      background: white;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
     }
 
-    .logo-container {
-      background: #87CEEB;
-      display: inline-block;
-      padding: 12px 25px;
-      border-radius: 12px;
-      margin-bottom: 12px;
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
-    .logo-container img {
-      height: 75px;
-      display: block;
+    .nav-logo img {
+      height: 55px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 10px;
     }
 
-    header h1 {
-      margin: 8px 0 5px;
-      font-weight: 600;
-      letter-spacing: 1px;
+    .nav-links a {
+      margin-left: 25px;
+      text-decoration: none;
+      color: #2a4d69;
+      font-weight: 500;
+      transition: 0.3s;
     }
 
-    header p {
-      margin: 0;
-      font-size: 14px;
-      opacity: 0.95;
+    .nav-links a:hover {
+      color: #2e8b57;
     }
 
-    /* HERO */
+    /* HERO SECTION */
     .hero {
+      height: 92vh;
+      background: linear-gradient(135deg, #dff6f0, #ffffff);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
-      padding: 70px 20px 60px;
-      background: linear-gradient(to bottom, #ffffff, #e6f7ff);
+      padding: 20px;
     }
 
-    .hero h2 {
-      font-size: 32px;
+    .hero-logo {
+      background: white;
+      padding: 20px 40px;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+      margin-bottom: 25px;
+    }
+
+    .hero-logo img {
+      width: 260px;
+      max-width: 80%;
+    }
+
+    .hero h1 {
+      font-size: 38px;
       color: #1e3d59;
       margin-bottom: 15px;
     }
 
     .hero p {
-      max-width: 650px;
-      margin: auto;
-      font-size: 16px;
-      line-height: 1.7;
+      max-width: 700px;
+      font-size: 17px;
       color: #555;
+      line-height: 1.7;
     }
 
-    .cta-btn {
+    .hero-buttons {
       margin-top: 30px;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .btn {
       padding: 14px 28px;
-      font-size: 15px;
       border-radius: 30px;
       border: none;
+      font-size: 15px;
       cursor: pointer;
-      background: linear-gradient(135deg, #2a4d69, #4b86b4);
+      transition: 0.3s;
+      text-decoration: none;
+    }
+
+    .primary-btn {
+      background: linear-gradient(135deg, #2e8b57, #3cb371);
       color: white;
       box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-      transition: 0.3s;
     }
 
-    .cta-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 8px 22px rgba(0,0,0,0.2);
+    .secondary-btn {
+      background: white;
+      color: #2e8b57;
+      border: 2px solid #2e8b57;
     }
 
-    /* SECTION TITLE */
+    .btn:hover {
+      transform: translateY(-3px);
+    }
+
+    /* SECTION */
     .section {
       padding: 70px 20px;
       text-align: center;
     }
 
     .section h2 {
-      font-size: 26px;
+      font-size: 28px;
       color: #2a4d69;
-      margin-bottom: 15px;
+      margin-bottom: 40px;
     }
 
-    /* SERVICES */
-    .services {
+    .cards {
       display: flex;
-      flex-wrap: wrap;
       justify-content: center;
       gap: 25px;
-      margin-top: 40px;
+      flex-wrap: wrap;
     }
 
     .card {
       background: white;
       width: 300px;
       padding: 25px;
-      border-radius: 14px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      border-radius: 16px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.08);
       transition: 0.3s;
       text-align: left;
     }
@@ -124,23 +165,13 @@
 
     .card h3 {
       color: #1e3d59;
-      margin-top: 0;
+      margin-bottom: 10px;
     }
 
     .price {
-      font-size: 18px;
       font-weight: 600;
       color: #2e8b57;
       margin-top: 10px;
-    }
-
-    /* WHY US */
-    .features {
-      max-width: 700px;
-      margin: 40px auto 0;
-      text-align: left;
-      line-height: 1.9;
-      font-size: 15px;
     }
 
     /* FOOTER */
@@ -148,8 +179,8 @@
       background: #1e3d59;
       color: white;
       text-align: center;
-      padding: 20px;
-      font-size: 13px;
+      padding: 18px;
+      font-size: 14px;
       margin-top: 40px;
     }
   </style>
@@ -157,70 +188,67 @@
 
 <body>
 
-  <!-- HEADER -->
-  <header>
-    <div class="logo-container">
-      <img src="logo.png" alt="Immunisphere Logo">
+  <!-- NAVIGATION -->
+  <nav>
+    <div class="nav-logo">
+      <img src="logo white background" alt="Immunisphere Logo">
+      <strong>Immunisphere</strong>
     </div>
-    <h1>Immunisphere Homeopathy</h1>
-    <p>Natural Healing • Personalized Care • Online Consultations</p>
-  </header>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="doctor-login.html">Doctor Login</a>
+      <a href="patient-login.html">Patient Login</a>
+    </div>
+  </nav>
 
   <!-- HERO -->
   <section class="hero">
-    <h2>Gentle Healing for a Healthier You 🌿</h2>
+    <div class="hero-logo">
+      <img src="logo white background" alt="Immunisphere Logo Large">
+    </div>
+
+    <h1>Gentle Healing. Personalized Homeopathy.</h1>
     <p>
-      Experience safe and holistic homeopathic treatment from qualified doctors.
-      We combine traditional healing wisdom with modern digital consultation for
-      convenient, personalized care.
+      Immunisphere brings trusted homeopathic care to your home through AI-assisted
+      analysis and expert doctor consultations. Safe, natural, and tailored treatment
+      plans for long-term wellness.
     </p>
-    <button class="cta-btn" onclick="location.href='book-consultation.html'">
-      Book Your Consultation
-    </button>
+
+    <div class="hero-buttons">
+      <a href="book-consultation.html" class="btn primary-btn">Book Consultation</a>
+      <a href="how-it-works.html" class="btn secondary-btn">How It Works</a>
+    </div>
   </section>
 
-  <!-- SERVICES -->
+  <!-- CONSULTATION PLANS -->
   <section class="section">
-    <h2>Our Consultation Plans</h2>
-
-    <div class="services">
+    <h2>Consultation Options</h2>
+    <div class="cards">
 
       <div class="card">
         <h3>AI Case Analysis</h3>
-        <p>Digital case taking with expert doctor review and prescription.</p>
-        <div class="price">₹999 (1 Month Medicine)</div>
+        <p>Digital case taking with doctor review, prescription, and medicine.</p>
+        <div class="price">₹999 – 1 Month Medicine</div>
       </div>
 
       <div class="card">
         <h3>Phone Consultation</h3>
-        <p>Talk directly with a homeopathic doctor for guided treatment.</p>
-        <div class="price">₹1499 (1 Month Medicine)</div>
+        <p>Consult a doctor over a call for guided treatment and follow-up.</p>
+        <div class="price">₹1499 – 1 Month Medicine</div>
       </div>
 
       <div class="card">
         <h3>Video Consultation</h3>
-        <p>Face-to-face video session for detailed evaluation and care.</p>
-        <div class="price">₹1899 (1 Month Medicine)</div>
+        <p>Face-to-face online consultation for detailed case evaluation.</p>
+        <div class="price">₹1899 – 1 Month Medicine</div>
       </div>
 
-    </div>
-  </section>
-
-  <!-- WHY US -->
-  <section class="section" style="background:#ffffff;">
-    <h2>Why Patients Trust Immunisphere</h2>
-    <div class="features">
-      ✔ Experienced & Qualified Homeopathic Doctors<br>
-      ✔ Safe, Natural & Side-Effect Free Remedies<br>
-      ✔ Personalized Treatment Plans<br>
-      ✔ Easy Online Consultations Across India<br>
-      ✔ Continuous Follow-up & Support
     </div>
   </section>
 
   <!-- FOOTER -->
   <footer>
-    © 2026 Immunisphere Homeopathy | Healing Naturally 🌿
+    © 2026 Immunisphere Homeopathy | Natural Healing 🌿
   </footer>
 
 </body>
