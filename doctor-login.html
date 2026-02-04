@@ -1,38 +1,45 @@
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.appspot.com",
-  messagingSenderId: "YOUR_MSG_ID",
-  appId: "YOUR_APP_ID"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-const btn = document.getElementById("loginBtn");
-
-btn.addEventListener("click", async () => {
-  console.log("Login button clicked");
-
-  const emailInput = document.getElementById("email").value;
-  const passwordInput = document.getElementById("password").value;
-
-  console.log("Email:", emailInput);
-
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, emailInput, passwordInput);
-    console.log("Login success:", userCredential.user);
-    alert("Login successful!");
-    window.location.href = "doctor-dashboard.html";
-  } catch (error) {
-    console.error("Login error:", error);
-    alert(error.code + " — " + error.message);
-  }
-});
-</script>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 350px;
+    }
+    h2 { text-align: center; margin-bottom: 20px; }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    button:hover { background: #1a252f; }
+    .error
 
