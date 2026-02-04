@@ -5,142 +5,223 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Book Consultation | Immunisphere</title>
 
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: Arial, sans-serif;
-      background: #f4f7fb;
-      margin: 0;
-      padding: 20px;
+      font-family: 'Poppins', sans-serif;
+      background: #f4f9f9;
+      color: #333;
     }
 
-    .container {
-      max-width: 700px;
-      margin: auto;
+    /* NAVBAR */
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px 40px;
       background: white;
-      padding: 25px;
-      border-radius: 8px;
-      box-shadow: 0 0 12px rgba(0,0,0,0.08);
+      box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     }
 
-    h1 {
-      text-align: center;
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-logo img {
+      height: 55px;
+      background: white;
+      padding: 6px 10px;
+      border-radius: 10px;
+    }
+
+    .nav-links a {
+      margin-left: 25px;
+      text-decoration: none;
       color: #2a4d69;
+      font-weight: 500;
+    }
+
+    .nav-links a:hover { color: #2e8b57; }
+
+    /* PAGE HEADER */
+    .page-header {
+      text-align: center;
+      padding: 50px 20px 30px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      color: #1e3d59;
+      margin-bottom: 10px;
+    }
+
+    .page-header p {
+      color: #555;
+      font-size: 16px;
+    }
+
+    /* FORM CARD */
+    .form-container {
+      max-width: 700px;
+      margin: 30px auto 60px;
+      background: white;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+
+    .form-group {
+      margin-bottom: 18px;
     }
 
     label {
-      font-weight: bold;
+      font-weight: 500;
       display: block;
-      margin-top: 15px;
+      margin-bottom: 6px;
+      color: #2a4d69;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 10px;
-      margin-top: 6px;
-      border-radius: 5px;
+      padding: 12px;
+      border-radius: 8px;
       border: 1px solid #ccc;
       font-size: 14px;
     }
 
-    textarea {
-      resize: vertical;
-      min-height: 80px;
+    textarea { resize: vertical; }
+
+    /* CONSULTATION OPTIONS */
+    .consult-options {
+      display: grid;
+      gap: 12px;
+      margin-top: 10px;
     }
 
-    button {
+    .option-card {
+      border: 2px solid #e0f2f1;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    .option-card:hover {
+      border-color: #2e8b57;
+      background: #f1fbf6;
+    }
+
+    .submit-btn {
       margin-top: 20px;
       width: 100%;
-      padding: 12px;
-      font-size: 15px;
+      padding: 14px;
+      border-radius: 30px;
       border: none;
-      border-radius: 5px;
-      background: #2a4d69;
+      background: linear-gradient(135deg, #2e8b57, #3cb371);
       color: white;
+      font-size: 16px;
       cursor: pointer;
+      transition: 0.3s;
     }
 
-    .note {
-      font-size: 13px;
-      color: gray;
-      margin-top: 10px;
+    .submit-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    /* FOOTER */
+    footer {
+      background: #1e3d59;
+      color: white;
       text-align: center;
+      padding: 18px;
+      font-size: 14px;
     }
   </style>
 </head>
+
 <body>
 
-<div class="container">
-  <h1>Book a Consultation</h1>
+  <!-- NAVBAR WITH LOGO -->
+  <nav>
+    <div class="nav-logo">
+      <img src="logo white background" alt="Immunisphere Logo">
+      <strong>Immunisphere</strong>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="doctor-login.html">Doctor Login</a>
+      <a href="patient-login.html">Patient Login</a>
+    </div>
+  </nav>
 
-  <form id="consultForm">
+  <!-- PAGE TITLE -->
+  <div class="page-header">
+    <h1>Book Your Consultation</h1>
+    <p>Select your preferred consultation mode and share your details</p>
+  </div>
 
-    <label>Full Name</label>
-    <input type="text" id="name" required />
+  <!-- FORM -->
+  <div class="form-container">
+    <form action="payment.html">
 
-    <label>Age</label>
-    <input type="number" id="age" required />
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" required>
+      </div>
 
-    <label>Gender</label>
-    <select id="gender" required>
-      <option value="">Select</option>
-      <option>Male</option>
-      <option>Female</option>
-      <option>Other</option>
-    </select>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" required>
+      </div>
 
-    <label>Phone Number</label>
-    <input type="tel" id="phone" required />
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" required>
+      </div>
 
-    <label>Main Health Complaint</label>
-    <textarea id="complaint" required></textarea>
+      <div class="form-group">
+        <label>Briefly Describe Your Health Concern</label>
+        <textarea rows="4"></textarea>
+      </div>
 
-    <label>Since How Long?</label>
-    <input type="text" id="duration" placeholder="e.g. 6 months" required />
+      <div class="form-group">
+        <label>Select Consultation Type</label>
+        <div class="consult-options">
 
-    <label>Preferred Consultation Mode</label>
-    <select id="consultationMode" required>
-      <option value="">Select</option>
-      <option value="AI" data-price="999">AI Case Taking + Doctor Review (₹999)</option>
-      <option value="Phone" data-price="1499">Phone Consultation + Medicine (₹1499)</option>
-      <option value="Video" data-price="1899">Video Consultation + Medicine (₹1899)</option>
-    </select>
+          <label class="option-card">
+            <input type="radio" name="consultation" value="AI Case" required>
+            <strong>AI Case Analysis – ₹999</strong><br>
+            AI case taking + doctor review + 1 month medicine
+          </label>
 
-    <button type="submit">Proceed to Payment</button>
-    <div class="note">You will be redirected to secure payment</div>
+          <label class="option-card">
+            <input type="radio" name="consultation" value="Phone">
+            <strong>Phone Consultation – ₹1499</strong><br>
+            Call with doctor + prescription + 1 month medicine
+          </label>
 
-  </form>
-</div>
+          <label class="option-card">
+            <input type="radio" name="consultation" value="Video">
+            <strong>Video Consultation – ₹1899</strong><br>
+            Video call + prescription + 1 month medicine
+          </label>
 
-<script>
-  document.getElementById("consultForm").addEventListener("submit", function(e) {
-    e.preventDefault();
+        </div>
+      </div>
 
-    const caseId = "CASE_" + Date.now();
+      <button type="submit" class="submit-btn">Proceed to Payment</button>
 
-    const selectedOption = document.getElementById("consultationMode");
-    const price = selectedOption.options[selectedOption.selectedIndex].dataset.price;
-    const mode = selectedOption.value;
+    </form>
+  </div>
 
-    const patientData = {
-      caseId,
-      name: name.value,
-      age: age.value,
-      gender: gender.value,
-      phone: phone.value,
-      main_complaint: complaint.value,
-      duration: duration.value,
-      consultationMode: mode,
-      amount: price,
-      status: "Pending Payment"
-    };
-
-    // Store temporarily before payment
-    localStorage.setItem("pendingCase", JSON.stringify(patientData));
-
-    // Redirect to payment page
-    window.location.href = `payment.html?caseId=${caseId}&amount=${price}`;
-  });
-</script>
+  <footer>
+    © 2026 Immunisphere Homeopathy | Natural Healing 🌿
+  </footer>
 
 </body>
 </html>
