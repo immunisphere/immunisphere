@@ -3,72 +3,219 @@
 <head>
   <title>Doctor Dashboard</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  
+  <style>
+    body {
+      font-family: Arial;
+      margin: 0;
+      background: #f4f6f9;
+    }
+
+    header {
+      background: #2c3e50;
+      color: white;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      padding: 10px 15px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .patient {
+      border-bottom: 1px solid #ddd;
+      padding: 10px 0;
+    }
+
+    .logout {
+      background: red;
+    }
+  </style>
 </head>
+
 <body>
+
+<header>
   <h2>Doctor Dashboard</h2>
-  <button id="logoutBtn">Logout</button>
-  <div id="status">Checking login...</div>
-  <div id="patientList"></div>
+  <button class="logout" id="logoutBtn">Logout</button>
+</header>
+
+<div class="container">
+
+  <!-- ADD PATIENT -->
+  <div class="card">
+    <h3>Add New Patient</h3>
+    <input type="text" id="name" placeholder="Patient Name">
+    <input type="number" id="age" placeholder="Age">
+    
+    <select id="gender">
+      <option value="">Select Gender</option>
+      <option>Male</option>
+      <option>Female</option>
+      <option>Other</option>
+    </select>
+
+    <textarea id="symptoms" placeholder="Symptoms"></textarea>
+
+    <button id="addPatientBtn">Save Patient</button>
+  </div>
+
+  <!-- PATIENT LIST -->
+  <div class="card">
+    <h3>Patient Records</h3>
+    <div id="patientList"></div>
+  </div>
+
+</div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
+import { 
+  getFirestore, 
+  collection, 
+  addDoc, 
+  getDocs,
+  deleteDoc,
+  doc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+// 🔥 Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
   authDomain: "immunisphere-f6239.firebaseapp.com",
-  projectId: "immunisphere-f6239",
-  storageBucket: "immunisphere-f6239.firebasestorage.app",
-  messagingSenderId: "141342230101",
-  appId: "1:141342230101:web:f9ba568327657e643536dc"
+  projectId: "immunisphere-f6239"
 };
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const statusDiv = document.getElementById("status");
-const patientList = document.getElementById("patientList");
-
-// 🔐 WAIT for auth to fully initialize
-onAuthStateChanged(auth, async (user) => {
-  console.log("Auth state:", user);
-
-  if (user) {
-    statusDiv.innerText = "Logged in as Doctor";
-    loadPatients();
-  } else {
-    statusDiv.innerText = "Not logged in. Redirecting...";
-    setTimeout(() => {
-      window.location.href = "doctor-login.html";
-    }, 1500);
+// 🔐 AUTH CHECK
+onAuthStateChanged(auth, (user) => {
+  if (!user) {
+    window.location.href = "doctor-login.html";
   }
 });
 
-// 🚪 Logout
-document.getElementById("logoutBtn").onclick = () => {
-  signOut(auth).then(() => {
-    window.location.href = "doctor-login.html";
-  });
-};
+// 🚪 LOGOUT
+document.getElementById("logoutBtn").addEventListener("click", async () => {
+  await signOut(auth);
+  window.location.href = "doctor-login.html";
+});
 
-// 👥 Load Patients
+// ➕ ADD PATIENT
+document.getElementById("addPatientBtn").addEventListener("click", async () => {
+  
+  const name = document.getElementById("name").value.trim();
+  const age = document.getElementById("age").value;
+  const gender = document.getElementById("gender").value;
+  const symptoms = document.getElementById("symptoms").value.trim();
+
+  if (!name || !age || !gender || !symptoms) {
+    alert("Fill all fields");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "patients"), {
+      name,
+      age,
+      gender,
+      symptoms,
+      createdAt: serverTimestamp()
+    });
+
+    alert("Patient Saved");
+
+    // Clear form
+    document.getElementById("name").value = "";
+    document.getElementById("age").value = "";
+    document.getElementById("gender").value = "";
+    document.getElementById("symptoms").value = "";
+
+    loadPatients();
+
+  } catch (error) {
+    console.error(error);
+    alert("Error saving patient");
+  }
+});
+
+// 📋 LOAD PATIENTS
 async function loadPatients() {
-  patientList.innerHTML = "Loading patients...";
-  const querySnapshot = await getDocs(collection(db, "users"));
+  const patientList = document.getElementById("patientList");
+  patientList.innerHTML = "Loading...";
+
+  const querySnapshot = await getDocs(collection(db, "patients"));
 
   patientList.innerHTML = "";
-  querySnapshot.forEach(doc => {
-    const data = doc.data();
-    if (data.role === "patient") {
-      const div = document.createElement("div");
-      div.innerHTML = `<p>${data.name} (${data.email})</p>`;
-      patientList.appendChild(div);
-    }
+
+  querySnapshot.forEach((docSnap) => {
+    const data = docSnap.data();
+
+    const div = document.createElement("div");
+    div.className = "patient";
+
+    div.innerHTML = `
+      <strong>${data.name}</strong> (${data.age}, ${data.gender})<br>
+      ${data.symptoms}<br><br>
+      <button onclick="deletePatient('${docSnap.id}')">Delete</button>
+    `;
+
+    patientList.appendChild(div);
   });
 }
+
+// ❌ DELETE PATIENT
+window.deletePatient = async function(id) {
+  if (confirm("Delete this patient?")) {
+    await deleteDoc(doc(db, "patients", id));
+    loadPatients();
+  }
+};
+
+// 🔄 INITIAL LOAD
+loadPatients();
+
 </script>
+
 </body>
 </html>
-
