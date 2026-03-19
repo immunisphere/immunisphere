@@ -1,3 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Doctor Login - Immunisphere</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #2c3e50, #4ca1af);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .login-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      width: 100%;
+      max-width: 350px;
+      text-align: center;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 14px;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #2c3e50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #1a252f;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .loader {
+      display: none;
+      margin-top: 10px;
+      font-size: 14px;
+      color: #555;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="login-box">
+  <h2>Doctor Login</h2>
+
+  <input type="email" id="email" placeholder="Enter Email" />
+  <input type="password" id="password" placeholder="Enter Password" />
+
+  <button id="loginBtn">Login</button>
+
+  <div class="loader" id="loader">Logging in...</div>
+  <div class="error" id="errorMsg"></div>
+</div>
+
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
 import { 
@@ -28,37 +114,41 @@ const db = getFirestore(app);
 
 const loginBtn = document.getElementById("loginBtn");
 const errorMsg = document.getElementById("errorMsg");
+const loader = document.getElementById("loader");
 
-// 🔄 Auto-redirect if already logged in
+// 🔄 Auto redirect if already logged in
 onAuthStateChanged(auth, async (user) => {
   if (user) {
     const docSnap = await getDoc(doc(db, "users", user.uid));
+
     if (docSnap.exists() && docSnap.data().role === "doctor") {
       window.location.href = "doctor-dashboard.html";
     }
   }
 });
 
-// 🔐 Login function
+// 🔐 Login
 loginBtn.addEventListener("click", async () => {
+
   errorMsg.textContent = "";
+  loader.style.display = "block";
+  loginBtn.disabled = true;
 
   const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value.trim();
 
   if (!email || !password) {
     errorMsg.textContent = "Please enter email and password.";
+    loader.style.display = "none";
+    loginBtn.disabled = false;
     return;
   }
-
-  // ⏳ Disable button during login
-  loginBtn.disabled = true;
-  loginBtn.textContent = "Logging in...";
 
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
+    // 🔍 Check role
     const docSnap = await getDoc(doc(db, "users", user.uid));
 
     if (!docSnap.exists()) {
@@ -69,30 +159,30 @@ loginBtn.addEventListener("click", async () => {
       throw new Error("Access denied. Not a doctor account.");
     }
 
-    // ✅ Save session info (optional)
-    localStorage.setItem("doctorLoggedIn", "true");
-
-    // 🚀 Redirect
+    // ✅ Success
     window.location.href = "doctor-dashboard.html";
 
   } catch (error) {
     console.error(error);
 
-    // 🎯 Friendly errors
     if (error.code === "auth/user-not-found") {
       errorMsg.textContent = "No account found.";
     } else if (error.code === "auth/wrong-password") {
       errorMsg.textContent = "Incorrect password.";
     } else if (error.code === "auth/invalid-email") {
-      errorMsg.textContent = "Invalid email format.";
+      errorMsg.textContent = "Invalid email.";
     } else {
       errorMsg.textContent = error.message;
     }
 
   } finally {
+    loader.style.display = "none";
     loginBtn.disabled = false;
-    loginBtn.textContent = "Login";
   }
+
 });
 </script>
+
+</body>
+</html>
 
