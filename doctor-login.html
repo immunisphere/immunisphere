@@ -1,65 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Doctor Login</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .login-box {
-      background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 350px;
-    }
-    h2 { text-align: center; margin-bottom: 20px; }
-    input {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-    }
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #2c3e50;
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-    }
-    button:hover { background: #1a252f; }
-    .error { color: red; text-align: center; margin-top: 10px; }
-  </style>
-</head>
-<body>
-
-<div class="login-box">
-  <h2>Doctor Login</h2>
-  <input type="email" id="email" placeholder="Email" />
-  <input type="password" id="password" placeholder="Password" />
-  <button id="loginBtn">Login</button>
-  <div class="error" id="errorMsg"></div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
 
-// 🔥 REPLACE WITH YOUR FIREBASE CONFIG
+import { 
+  getFirestore, 
+  doc, 
+  getDoc 
+} from "https://www.gstatic.com/firebasejs/12.8.0/firebase-firestore.js";
+
+// 🔥 Your Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAnhR2-KIlypbb4hriWuqFRC3SRk9Zmi2Q",
   authDomain: "immunisphere-f6239.firebaseapp.com",
@@ -76,6 +29,17 @@ const db = getFirestore(app);
 const loginBtn = document.getElementById("loginBtn");
 const errorMsg = document.getElementById("errorMsg");
 
+// 🔄 Auto-redirect if already logged in
+onAuthStateChanged(auth, async (user) => {
+  if (user) {
+    const docSnap = await getDoc(doc(db, "users", user.uid));
+    if (docSnap.exists() && docSnap.data().role === "doctor") {
+      window.location.href = "doctor-dashboard.html";
+    }
+  }
+});
+
+// 🔐 Login function
 loginBtn.addEventListener("click", async () => {
   errorMsg.textContent = "";
 
@@ -87,33 +51,48 @@ loginBtn.addEventListener("click", async () => {
     return;
   }
 
+  // ⏳ Disable button during login
+  loginBtn.disabled = true;
+  loginBtn.textContent = "Logging in...";
+
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // ✅ Check role in Firestore
     const docSnap = await getDoc(doc(db, "users", user.uid));
 
     if (!docSnap.exists()) {
-      errorMsg.textContent = "User profile not found in database.";
-      return;
+      throw new Error("User profile not found.");
     }
 
     if (docSnap.data().role !== "doctor") {
-      errorMsg.textContent = "Access denied. Not a doctor account.";
-      return;
+      throw new Error("Access denied. Not a doctor account.");
     }
 
-    // 🎉 Success → Go to dashboard
+    // ✅ Save session info (optional)
+    localStorage.setItem("doctorLoggedIn", "true");
+
+    // 🚀 Redirect
     window.location.href = "doctor-dashboard.html";
 
   } catch (error) {
     console.error(error);
-    errorMsg.textContent = error.message;
+
+    // 🎯 Friendly errors
+    if (error.code === "auth/user-not-found") {
+      errorMsg.textContent = "No account found.";
+    } else if (error.code === "auth/wrong-password") {
+      errorMsg.textContent = "Incorrect password.";
+    } else if (error.code === "auth/invalid-email") {
+      errorMsg.textContent = "Invalid email format.";
+    } else {
+      errorMsg.textContent = error.message;
+    }
+
+  } finally {
+    loginBtn.disabled = false;
+    loginBtn.textContent = "Login";
   }
 });
 </script>
-
-</body>
-</html>
 
